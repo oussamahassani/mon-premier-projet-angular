@@ -1,0 +1,82 @@
+/*!
+
+=========================================================
+* Argon Dashboard Angular - v1.0.1
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/argon-dashboard-angular
+* Copyright 2019 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-angular/blob/master/LICENSE.md)
+
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+*/
+$ignore-warning: true;
+// Core
+
+@import "custom/functions";
+@import "custom/variables";
+@import "custom/mixins";
+
+// Bootstrap (4.4.0) components
+
+@import "~bootstrap/scss/bootstrap";
+
+// Argon utilities and components
+
+@import "custom/reboot";
+@import "custom/utilities";
+@import "custom/components";
+
+// Vendor (Plugins)
+
+@import "custom/vendors";
+
+// Angular Differences
+@import "angular-differences/angular-differences";
+
+.Recu{
+    background-color:green;
+    color:white;
+}
+.Recu::after{
+    content:'Reçu'
+}
+.Confirmed{
+    background-color:#4285F4;
+    color:white;
+}
+.Confirmed::after{
+    content:'Confirmée'
+}
+.Canceled{
+    background-color:red;
+    color:white;
+}
+.Canceled::after{
+    content:'Rejetée'
+}
+.attente{
+    background-color:orangered;
+    color:white;
+}
+.attente::after{
+    content:'En Attente'
+}
+
+
+.Prelevee{
+    background-color:green;
+    color:white;
+}
+.Prelevee::after{
+    content:'Prélevée'
+}
+
+.card-header {
+    background-color: transparent;
+}
