@@ -1,0 +1,270 @@
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+    style="min-height: 200px;  background-size: cover; background-position: center top;">
+    <!-- Mask -->
+    <span class="mask bg-gradient-danger opacity-8"></span>
+    <!-- Header container -->
+    <div class="container-fluid d-flex align-items-center">
+        <div class="row">
+            <div class="col-lg-7 col-md-10">
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+    <div class="row">
+        <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
+            <div class="card card-profile shadow">
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 order-lg-2">
+
+                        <div class="card-profile-image">
+                            <a>
+                                <img src="{{previewURL}}" class="rounded-circle">
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+                    <div class="d-flex justify-content-between">
+
+
+                    </div>
+                </div>
+                <div class="card-body pt-0 pt-md-4">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card-profile-stats d-flex justify-content-center mt-md-5">
+                                <div>
+                                    <div class="custom-file">
+                                        <input #imageInput placeholder="Product Image" accept="image/*" lang="fr"
+                                            (change)="addImage(imageInput)" type="file" class="custom-file-input"
+                                            id="customFile">
+                                        <label class="custom-file-label" for="customFile">
+                                            Choisir le fichier</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-8 order-xl-1">
+            <div class="card bg-secondary shadow">
+                <div class="card-header bg-white border-0">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 class="mb-0">Ajouter employé</h3>
+                        </div>
+                        <div class="col-4 text-right">
+                            <!--(click)="onAddProductSubmit()" type="submit" class="btn btn-danger pull-right"
+              [disabled]="formProduct.invalid"-->
+                            <button (click)="onAddUserSubmit()"  [disabled]="formUser.invalid" type="submit" class="btn btn-info">Ajouter utilisateur</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="formUser">
+
+                        <!-- Description -->
+                        <h6 class="heading-small text-muted mb-4">Permissions</h6>
+                        <div class="pl-lg-4 row">
+
+                            <div class="col-md-12">
+                                <mat-form-field style="width: 100%;">
+                                    <mat-select placeholder="Permissions" name="permission" (change)="selected($event)"
+                                        formControlName="permissions" multiple #multiSelect>
+                                        <ngx-mat-select-search placeholder="Chercher "
+                                            [formControl]="permissionsFilter" name="perm" ngDefaultControl></ngx-mat-select-search>
+                                        <mat-option *ngFor="let permo of filteredpermissionslist | async"
+                                            [value]="{id: permo._id, groupename: permo.groupename}">{{permo.groupename}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="formUser.controls.permissions.invalid">veuillez sélectionner au
+                                        moins une permission</mat-error>
+
+                                </mat-form-field>
+                            </div>
+
+
+
+
+                        </div>
+                        <hr class="my-4" />
+                        <h6 class="heading-small text-muted mb-4"> Information de l'utilisateur</h6>
+                        <div class="pl-lg-4">
+                            <div class="row">
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-username">
+                                            Nom d'utilisateur*</label>
+                                        <input type="text" id="input-username"
+                                            class="form-control form-control-alternative" placeholder="Username"
+                                            formControlName="username">
+                                            <div *ngIf="formUser.controls.username.errors" class="invalid-feedback">
+                                                <div *ngIf="formUser.controls.username.errors.required">
+                                                    Nom d'utilisateur est requis</div>
+                                            </div>    
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-email">Adresse électronique*</label>
+                                        <input type="email" id="input-email"
+                                            class="form-control form-control-alternative"
+                                            placeholder="email@example.com" formControlName="email">
+                                        <div *ngIf="formUser.controls.email.errors" class="invalid-feedback">
+                                            <div *ngIf="formUser.controls.email.errors.required">L'email est requis</div>
+                                            <div *ngIf="formUser.controls.email.errors.email">
+                                                L'email n'est pas valide</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-first-name">Prénom*</label>
+                                        <input type="text" id="input-first-name"
+                                            class="form-control form-control-alternative" placeholder="First name"
+                                            formControlName="fname">
+                                            <div *ngIf="formUser.controls.fname.errors" class="invalid-feedback">
+                                                <div *ngIf="formUser.controls.fname.errors.required">Prénom est requis</div>
+                                            </div> 
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-last-name">Nom*</label>
+                                        <input type="text" id="input-last-name"
+                                            class="form-control form-control-alternative" placeholder="Last name"
+                                            formControlName="lname">
+                                            <div *ngIf="formUser.controls.lname.errors" class="invalid-feedback">
+                                                <div *ngIf="formUser.controls.lname.errors.required">Nom est requis</div>
+                                            </div>    
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label for="exampleFormControlSelect1">Sexe</label>
+                                        <select class="form-control" formControlName="gender"
+                                            id="exampleFormControlSelect1">
+                                            <option value="male">Mâle</option>
+                                            <option value="female">Femelle</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-password">Mot de passe*</label>
+                                        <input type="password" id="input-password"
+                                            class="form-control form-control-alternative" placeholder="Password"
+                                            formControlName="password">
+                                            <div *ngIf="formUser.controls.password.errors" class="invalid-feedback">
+                                                <div *ngIf="formUser.controls.password.errors.required">Mot de passe est requis</div>
+                                                <div *ngIf="formUser.controls.password.errors.minlength">Mot de passe doit être à au moins 6 caractères</div>
+                                            </div>    
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-cpassword">Confirmer
+                                            Mot de passe*</label>
+                                        <input type="password" id="input-cpassword"
+                                            class="form-control form-control-alternative" placeholder="Confirm Password"
+                                            formControlName="cpassword">
+                                            <div *ngIf="formUser.controls.cpassword.errors" class="invalid-feedback">
+                                                <div *ngIf="formUser.controls.cpassword.errors.required">Confirmer
+                                                    Mot de passe est requis</div>
+                                                <div *ngIf="formUser.controls.cpassword.errors.isError">Les mots de passe doivent correspondre</div>
+                                            </div>    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-4" />
+                        <!-- Address -->
+                        <h6 class="heading-small text-muted mb-4">Contact information</h6>
+                        <div class="pl-lg-4">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"  [(ngModel)]="isComm" value="" id="defaultCheck1" [ngModelOptions]="{standalone: true}">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                          Commercial
+                                        </label>
+                                      </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top:15px;">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-address">Address*</label>
+                                        <input id="input-address" class="form-control form-control-alternative"
+                                            placeholder="Home Address" formControlName="adress"
+                                            value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
+                                            <div *ngIf="formUser.controls.adress.errors" cla    ss="invalid-feedback">
+                                                <div *ngIf="formUser.controls.adress.errors.required">Adresse est requis</div>
+                                            </div>    
+                                    </div>
+                                </div>
+                                <div class="col-md-4" *ngIf="isComm">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-city">Zone</label>
+                                        <input type="text"
+                                            class="form-control form-control-alternative form-control-change"
+                                            id="input-city" matInput placeholder="Zone" formControlName="zone" required
+                                            [matAutocomplete]="autoGroup">
+                                            <div *ngIf="formUser.controls.zone.errors" class="invalid-feedback">
+                                                <div *ngIf="formUser.controls.zone.errors.regionError">
+                                                    La zone doit être choisie dans la liste</div>
+                                            </div>      
+
+                                        <mat-autocomplete #autoGroup="matAutocomplete">
+                                            <mat-optgroup *ngFor="let group of stateGroupOptions | async"
+                                                [label]="group.letter">
+                                                <mat-option *ngFor="let name of group.names" [value]="name">
+                                                    {{name}}
+                                                </mat-option>
+                                            </mat-optgroup>
+                                        </mat-autocomplete>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-phone">N° Telephone*</label>
+                                        <input id="input-phone" class="form-control form-control-alternative"
+                                            placeholder="50 899 875" formControlName="tel" type="Number">
+                                            <div *ngIf="formUser.controls.tel.errors" class="invalid-feedback">
+                                                <div *ngIf="formUser.controls.tel.errors.required">Phone Number est requis</div>
+                                                <div *ngIf="formUser.controls.tel.errors.min || formUser.controls.tel.errors.max">Doit être un numéro de téléphone valide</div>
+                                            </div>    
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-salaire">Salaire</label>
+                                        <input type="text" id="input-salaire"
+                                            class="form-control form-control-alternative" placeholder="Ex. 1500">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

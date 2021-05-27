@@ -1,0 +1,184 @@
+
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--7">
+    <div class="receipt-content" style="background: transparent;margin-top: -200px;">
+        <div class="snippet">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="invoice-wrapper" id="bonreception">
+<div class="payment-info">
+    <div class="row">
+        <div class="col-sm-6">
+            <span style='font-size: 18px'>No. Bon de reception :   </span>
+            <span style='font-size: 18px'>{{name}}</span>
+        </div>
+        <div class="col-sm-6 text-right">
+            <span style='font-size: 18px'>Date de reception  </span>
+            <span style='font-size: 18px'>{{now | date:'medium'}}</span>
+        </div>
+    </div>
+</div>
+<div class="payment-details">
+    <div class="row">
+
+        <div class="col-sm-6" *ngIf="fournisseur">
+            <p class="client-info">
+                <span class="info-label" style='font-size: 18px'>Nom : </span>
+                <span class="info-text" style='font-size: 18px'>{{fournisseur.name}}</span>
+            </p>
+            <p class="client-info">
+                <span class="info-label" style='font-size: 18px'>Adresse : </span>
+                <span class="info-text" style='font-size: 18px'>{{fournisseur.adresse}}</span>
+            </p>
+            <p class="client-info">
+                <span class="info-label" style='font-size: 18px'>Telephone : </span>
+                <span class="info-text" style='font-size: 18px'>{{fournisseur.tel}}</span>
+            </p>
+        </div>
+        <div class="col-sm-6" *ngIf="fournisseur">
+            <div class="float-right">
+                <p class="client-info">
+                    <span class="info-label" style='font-size: 18px'>Matricule Fiscale : </span>
+                    <span class="info-text" style='font-size: 18px'>{{fournisseur.mat_fis}}</span>
+                </p>
+                <p class="client-info">
+                    <span class="info-label" style='font-size: 18px'>Email : </span>
+                    <span class="info-text" style='font-size: 18px'>{{fournisseur.email}}</span>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="line-items">
+    <div class="headers clearfix">
+        <div class="row header-matiere">
+            <div class="col" style='font-size: 18px'>N°Mat</div>
+            <div class="col" style='font-size: 18px'>Reference</div>
+            <div class="col" style='font-size: 18px'>Nom</div>
+            <div class="col" style='font-size: 18px'>Prix (HT)</div>
+            <!-- <div class="col" style='font-size: 18px'>Qte Demandée</div> -->
+        </div>
+        <div class="row mt-2 mb-2" *ngFor="let service of services;let i=index">
+            <div class="row col-12 mat-holder">
+                <div class="col" style='font-size: 18px'><strong>service {{i+1}}</strong></div>
+                <div class="col" style='font-size: 18px'>{{service.num}}</div>
+                <div class="col" style='font-size: 18px'>{{service.name}}</div>
+            
+                <div class="col">
+                    <input type="number" [(ngModel)]="service.total" min="1" class="form-control"
+                        (change)="changerPrix($event)"  />
+                </div>
+                
+                <!-- <div class="col" style='font-size: 18px'>{{service.asked_quantite}}</div> -->
+              
+                
+            </div>
+           
+
+
+        </div>
+    </div>
+
+
+
+    
+
+    <div class="row total">
+        <div class="col-sm-8">
+            <p class="extra-notes">
+                <span style='font-size: 18px'>Extra Notes   </span>
+                <textarea rows="4" [(ngModel)]="note" cols="50"></textarea>
+
+            </p>
+        </div>
+        <div class="col-sm-4 text-right" *ngIf="command">
+            <div class="float-right">
+                <div class="field">
+                    <span class="field-label" style='font-size: 18px'>Montant hors taxe</span>
+                    <span class="field-value">
+                        <div class="form-group">
+
+                            <span
+                                class="form-control span-input">{{command.total_ht | number:'0.3-3'}}</span>
+                        </div>
+                    </span>
+                </div>
+                <div class="field">
+                    <span class="field-label" style='font-size: 18px'>Montant TVA</span>
+                    <span class="field-value">
+                        <div class="form-group">
+
+                            <span
+                                class="form-control span-input">{{command.total_tva | number:'0.3-3'}}</span>
+                        </div>
+                    </span>
+                </div>
+                <div class="field grand-total">
+                    <span class="field-label" style='font-size: 18px'>Montant TTC</span>
+                    <span class="field-value">
+                        <div class="form-group">
+
+                            <span
+                                class="form-control span-input">{{command.total_ht+command.total_tva | number:'0.3-3'}}</span>
+                        </div>
+                    </span>
+                </div><br />
+                <div class="field">
+                    <span class="field-label">Statut</span> 
+                    <span class="field-value">
+                        <div class="form-group">
+                            <select class="form-control"   [(ngModel)]="statutValue">
+                                <option *ngFor="let value of values" [value]="value">{{value}}</option>
+                              </select>
+                        </div>
+                    </span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<div class="print imprime">
+    <button class="btn btn-success" [disabled]="foundCode" *ngIf="!changedPrix "
+        (click)="submitReception()">Sauvegarder</button><br />
+    <button class="btn btn-success" [disabled]="foundCode" *ngIf="changedPrix"
+        (click)="open(changeModal)">Sauvegarder</button>
+
+</div>
+</div></div></div></div></div></div>
+
+<ng-template #changeModal let-modal>
+	<div class="modal-content">
+		<div class="modal-header">
+			<h4 class="modal-title" id="modal-title">Confirmation du changement</h4>
+			<button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body">
+
+			<p><strong>
+					<span >Le prix de certaines service a changer.</span>
+				
+					Vous êtes sûrs de vouloir procéder a la sauvegarde ?
+				</strong>
+			</p>
+		
+		</div>
+		<div class="modal-footer">
+			<button type="button" mat-raised-button color="accent" class="btn btn-outline-secondary"
+				(click)="modal.dismiss('cancel click')">Annuler</button>
+			<button type="button" class="btn btn-success" (click)="submitReception()">Confirmer</button>
+		</div>
+	</div>
+</ng-template>

@@ -1,0 +1,73 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+  <div class="container-fluid">
+    <div class="header-body">
+
+    </div>
+  </div>
+</div>
+<div class="container-fluid mt--7">
+  <div class="row">
+
+    <div class="col">
+      <div class="card shadow">
+        <div class="card-header card-header-danger">
+          <h4 class="card-title">Update Client</h4>
+          <p class="card-category" *ngIf="client">{{client.name}}</p>
+        </div>
+        <div class="card-body">
+          <form class="row" style="justify-content: center;" *ngIf="client">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="name">Client name</label>
+                <input type="text" [(ngModel)]="client.name" name="name" class="form-control"
+                  placeholder="Saisir le nom*" value="" />
+
+              </div>
+              <div class="form-group">
+                <label for="mat_fis">Matricule Fiscale</label>
+                <input type="text" [(ngModel)]="client.mat_fis" name="mat_fis" class="form-control"
+                  placeholder="Matricule Fiscale*" value="" />
+
+              </div>
+              <div class="form-group">
+                <label for="phone">Telephone</label>
+                <input type="text" [(ngModel)]="client.tel" name="phone" class="form-control"
+                  placeholder="Saisir le numero de telephone*" value="" />
+
+              </div>
+              
+              
+
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" [(ngModel)]="client.email" name="email" class="form-control"
+                  placeholder="Saisir l'email*" value="" />
+
+              </div>
+              <div class="form-group">
+                <label for="adresse">Adresse</label>
+                <input type="text" [(ngModel)]="client.adresse" name="adresse" class="form-control"
+                  placeholder="Saisir l'adresse*" value="" />
+
+              </div>
+              <div class="form-group">
+                <label for="zone">Zone</label>
+                <input type="text" [(ngModel)]="client.zone" name="zone" class="form-control"
+                  placeholder="Choisir la zone*" value="" />
+
+              </div>
+              
+              
+            </div>
+
+            <button (click)="updateClientSubmit()" type="submit" class="btn btn-danger pull-right">Update Client</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

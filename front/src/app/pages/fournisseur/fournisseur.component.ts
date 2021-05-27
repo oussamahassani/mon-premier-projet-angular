@@ -1,0 +1,308 @@
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { GeneralDataSource } from 'src/app/services/general';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { environment } from 'src/environments/environment';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
+import { GeneralService } from 'src/app/services/general.service';
+import { fromEvent, merge } from 'rxjs';
+import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+import { SnackbarComponent } from 'src/app/pages/snackbar/snackbar.component';
+import { FournisseurService } from 'src/app/services/fournisseur/fournisseur.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { CommandapproService } from 'src/app/services/commandappro/commandappro.service';
+import { saveAs } from 'file-saver';
+import { TypeMatService } from 'src/app/services/typemat/typemat.service';
+
+@Component({
+  selector: 'app-fournisseur',
+  templateUrl: './fournisseur.component.html',
+  styleUrls: ['./fournisseur.component.scss']
+})
+export class FournisseurComponent implements OnInit {
+
+
+  public focus;
+  displayedColumns: string[] = ['ref','categorie','name', 'type','tel', 'active', 'action'];
+  dataSource: GeneralDataSource;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('input') input: ElementRef;
+
+  fileToUpload: File = null;
+  exporting = false;
+  importing = false;
+  closeResult: string;
+  baseUrlImage = environment.baseUrlImage;
+  error: string;
+  fournisseurs: any;
+  fournisseur: any;
+  deleteFournisseur: any;
+  fournisseursLength: Number = 0;
+  activeSortHeader = [];
+  valueSortHeader = [];
+  commands: any = [];
+  fourCommandName = "";
+  isCommand: boolean = false;
+  typefiltre: any = '1';
+  fourfiltre: any = '1';
+  activeFiltre: any = '1';
+
+
+  query:any={active:true}
+  typeList: any = [
+    {
+      ref: "mp",
+      name: "Matiere premiére"
+    },
+    {
+      ref: "prm",
+      name: "Piéces de rechange machine"
+    },
+    {
+      ref: "prv",
+      name: "Piéces de rechange véhicule"
+    },
+    {
+      ref: "pl",
+      name: "Produits laboratoires"
+    },
+    {
+      ref: "fb",
+      name: "Fournitures de bureau"
+    },
+    {
+      ref: "tv",
+      name: "Tenues de travail"
+    },
+    {
+      ref: "pa",
+      name: "Palettes"
+    },
+    {
+      ref: "cb",
+      name: "Carburant"
+    },
+    {
+      ref: "ar",
+      name: "Achats récurrent"
+    },
+    {ref:'service',
+    name:"service"
+   }
+  ]
+  constructor(private modalService: NgbModal,
+    private fournisseurService: FournisseurService,
+    private snackBar: MatSnackBar,
+    private generalService: GeneralService,
+    private authService: AuthService) {
+
+  }
+
+  ngOnInit() {
+    this.init(this.query)
+  }
+
+  init(query: any = '') {
+    this.generalService.getCount('fournisseur').subscribe(res => {
+      this.fournisseursLength = res;
+    }, err => {
+    })
+    this.dataSource = new GeneralDataSource(this.generalService);
+    this.dataSource.loadItems(0, 5, this.activeSortHeader, this.valueSortHeader, "", 'fournisseur', query);
+  }
+
+
+  getCatName(categorie)
+  {
+     return this.typeList.filter(x=>x.ref===categorie)[0].name
+  }
+  ngAfterViewInit(): void {
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    fromEvent(this.input.nativeElement, 'keyup')
+      .pipe(
+        debounceTime(150),
+        distinctUntilChanged(),
+        tap(() => {
+          this.paginator.pageIndex = 0;
+          this.loadFournisseursPage();
+        })
+      )
+      .subscribe();
+    merge(this.sort.sortChange, this.paginator.page)
+      .pipe(
+        tap(() => this.loadFournisseursPage())
+      )
+      .subscribe();
+    this.paginator.page
+      .pipe(
+        tap(() => this.loadFournisseursPage())
+      )
+      .subscribe();
+  }
+  loadFournisseursPage() {
+    if (this.sort.active) {
+      let x = this.activeSortHeader.filter(x => x === this.sort.active);
+      if (!x || x.length == 0) {
+        this.activeSortHeader.push(this.sort.active);
+        if (this.sort.direction === "asc") {
+          this.valueSortHeader.push(1)
+        } else {
+          this.valueSortHeader.push(-1);
+        }
+      } else {
+        let index = this.activeSortHeader.indexOf(this.sort.active);
+        if (this.sort.direction === "asc") {
+          this.valueSortHeader[index] = 1;
+        } else {
+          this.valueSortHeader[index] = -1;
+        }
+
+      }
+    }
+    this.dataSource.loadItems(this.paginator.pageIndex * this.paginator.pageSize, this.paginator.pageSize, this.activeSortHeader, this.valueSortHeader, this.input.nativeElement.value, 'fournisseur',this.query)
+  }
+  open(content) {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+  close() {
+    this.modalService.dismissAll();
+  }
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+  deletefournisseurs() {
+    this.fournisseurService.deleteFournisseur(this.deleteFournisseur._id, false).subscribe(res => {
+      if (res.success) {
+        this.paginator.pageIndex = 0;
+        this.dataSource.loadItems(0, 5, this.activeSortHeader, this.valueSortHeader, "", 'fournisseur',this.query);
+        this.close();
+        this.snackBar.openFromComponent(SnackbarComponent, {
+          data: {
+            type: 'alert-success',
+            text: 'Fournisseur a été désactivé avec succées'
+          },
+          duration: 3000
+        });
+
+      } else {
+        this.close();
+        this.snackBar.openFromComponent(SnackbarComponent, {
+          data: {
+            type: 'alert-danger',
+            text: 'Probléme de désactivation'
+          },
+          duration: 3000
+        });
+      }
+    })
+  }
+
+
+  exporter(type) {
+    this.exporting = true;
+    this.fournisseurService.exporter(type).subscribe(res => {
+      if (res) {
+        saveAs(res, 'liste_des_fournisseurs.xlsx')
+        this.snackBar.openFromComponent(SnackbarComponent, {
+          data: {
+            type: 'alert-success',
+            text: 'Fichier crée avec succée, votre téléchargement commencera dans un instant'
+          },
+          duration: 3000
+        });
+
+      } else {
+        this.snackBar.openFromComponent(SnackbarComponent, {
+          data: {
+            type: 'alert-danger',
+            text: 'Probléme de création'
+          },
+          duration: 3000
+        });
+      }
+      this.exporting = false;
+      this.close();
+    }, err => {
+      this.snackBar.openFromComponent(SnackbarComponent, {
+        data: {
+          type: 'alert-danger',
+          text: 'Probléme de création'
+        },
+        duration: 3000
+      });
+      this.exporting = false;
+      this.close();
+    });
+  }
+
+
+  handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+  }
+
+  importer() {
+    this.importing = true;
+    this.fournisseurService.importer(this.fileToUpload, this.authService.getIdfromToken()).subscribe(res => {
+      if (res.success) {
+        this.snackBar.openFromComponent(SnackbarComponent, {
+          data: {
+            type: 'alert-success',
+            text: 'Importation terminer avec succée'
+          },
+          duration: 3000
+        });
+        this.init();
+      } else {
+        this.snackBar.openFromComponent(SnackbarComponent, {
+          data: {
+            type: 'alert-danger',
+            text: res.msg
+          },
+          duration: 3000
+        });
+      }
+      this.close();
+      this.importing = false;
+      this.fileToUpload = null;
+    }, error => {
+      this.snackBar.openFromComponent(SnackbarComponent, {
+        data: {
+          type: 'alert-danger',
+          text: 'Une erreur c\'est produite'
+        },
+        duration: 3000
+      });
+      this.close();
+      this.importing = false;
+      this.fileToUpload = null;
+    });
+  }
+
+  filtre() {
+    if (this.typefiltre != '1')
+      this.query.categorie = this.typefiltre;
+    if (this.fourfiltre != '1')
+      this.query.type = this.fourfiltre == 'true';
+    if (this.activeFiltre != '1') {
+      this.query.active = this.activeFiltre == 'true'
+    } else {
+      this.query.active = true;
+    }
+    this.init(this.query);
+  }
+
+}
+

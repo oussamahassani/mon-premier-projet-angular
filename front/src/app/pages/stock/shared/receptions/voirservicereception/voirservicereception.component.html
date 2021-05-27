@@ -1,0 +1,194 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+<div class="receipt-content" style="background: transparent;margin-top: -200px;">
+	<div class="snippet">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="client-info" *ngIf="statutValue && reception && (!reception.justif_reception || reception.justif_reception.length==0) ">
+					<input #recInput (change)="addReceptionFile(recInput,reception._id)" type="file" name="file" id="file" class="inputfile" />
+					<label for="file" class="btn btn-warning">Télécharger justificatif de reception</label>
+				</div>
+				<div class="invoice-wrapper" id="bon">
+					<div class="payment-info">
+						<div class="row">
+							<div class="col-sm-6">
+								<span style='font-size: 16px'>No. Reception</span>
+								<span *ngIf="reception" style='font-size: 16px'>{{reception.num}}</span>
+							</div>
+							<div class="col-sm-6 text-right">
+								<span style='font-size: 16px'>Date de reception</span>
+                                <span *ngIf="reception && reception.recu" style='font-size: 16px'>{{reception.createdAt | date:'medium'}}</span>
+                                <span *ngIf="reception && !reception.recu" style='font-size: 16px'>{{now | date:'medium'}}</span>
+							</div>	
+						</div>
+					</div>
+
+					<div class="payment-details">
+						<div class="row">
+							<div class="col-sm-6" *ngIf="reception && reception.fournisseur">
+								<p class="client-info">
+									<span style='font-size: 16px'>Nom : </span>
+									<span style='font-size: 16px'>{{reception.fournisseur.name}}</span>
+								</p>
+								<p class="client-info">
+									<span style='font-size: 16px'>Adresse : </span>
+									<span  style='font-size: 16px'>{{reception.fournisseur.adresse}}</span>
+								</p>
+								<p class="client-info">
+									<span style='font-size: 16px'>Telephone : </span>
+									<span style='font-size: 16px'>{{reception.fournisseur.tel}}</span>
+								</p>
+							</div>
+							<div class="col-sm-6" *ngIf="reception && reception.fournisseur">
+								<div class="float-right">
+								
+										
+										
+										<div class="client-info" *ngIf="reception" >
+											<span class="btn btn-success text-white" *ngIf="reception.justif_reception && reception.justif_reception.length>0" (click)="voirImage(reception.justif_reception)">Voir justificatif de reception</span>
+										</div>
+									
+									<p class="client-info">
+										<span style='font-size: 16px'>Matricule Fiscale : </span>
+										<span style='font-size: 16px'>{{reception.fournisseur.mat_fis}}</span>
+									</p>
+									<p class="client-info">
+										<span style='font-size: 16px'>Email : </span>
+										<span style='font-size: 16px'>{{reception.fournisseur.email}}</span>
+									</p>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="line-items">
+						<div class="headers clearfix">
+					
+							 <div class="row header-matiere">
+								<div class="col"  style='font-size: 16px'>N°Mat</div>
+								<div class="col" style='font-size: 16px'>Reference</div>
+								<div class="col" style='font-size: 16px'>Nom</div>
+								<div class="col" style='font-size: 16px'>Prix (HT)</div>
+								<div class="col" style='font-size: 16px'>Qte reçu</div>
+							</div> 
+							<div class="row mt-2 mb-2" *ngFor="let ser of service;let i=index">
+								<div class="row col-12 mat-holder">
+									<div class="col" style='font-size: 16px'>service {{i+1}}</div>
+									<div class="col" style='font-size: 16px' >{{ser.num}}</div>
+									<div class="col" style='font-size: 16px'>{{ser.name}}</div>
+							
+									<div class="col" style='font-size: 16px'>
+										{{ser.prix_achat}}
+									</div>
+									
+									<div class="col" style='font-size: 16px'>{{ser.asked_quantite}}</div>
+									<div class="col" style='font-size: 16px'>
+										{{ser.livred_quantite}}
+									</div>
+								
+								</div>
+						
+
+
+							</div>
+						</div>
+
+						
+
+						<div class="row total">
+							<div class="col-sm-6">
+								<p class="extra-notes" *ngIf="reception">
+									<span style='font-size: 18px'>Extra Notes</span>
+									<textarea rows="4" [(ngModel)]="reception.note" disabled
+										cols="50" style="background:transparent;border: none;"></textarea>
+
+								</p>
+							</div>
+							<div class="col-sm-6 text-right" *ngIf="reception">
+								<div class="float-right">
+									<div>
+										<span class="field-label" style='font-size: 18px'>Montant hors taxe</span>
+										<span class="field-value">
+											<div class="form-group">
+
+												<span
+													class="span-input" style='font-size: 18px'>{{reception.total_ht | number:'0.3-3'}}</span>
+											</div>
+										</span>
+									</div>
+									<div>
+										<span class="field-label" style='font-size: 18px'>Montant TVA</span>
+										<span class="field-value">
+											<div class="form-group">
+
+												<span
+													class="span-input" style='font-size: 18px'>{{reception.total_tva | number:'0.3-3'}}</span>
+											</div>
+										</span>
+									</div>
+									<div class="field grand-total">
+										<span class="field-label" style='font-size: 18px'>Montant TTC</span>
+										<span class="field-value">
+											<div class="form-group">
+
+												<span
+													class="span-input" style='font-size: 18px'>{{reception.total_ht+reception.total_tva | number:'0.3-3'}}</span>
+											</div>
+										</span>
+									</div><br />
+									<div class="field">
+										<span class="field-label" style='font-size: 18px'>Statut</span> 
+										<span class="field-value">
+											<div class="form-group">
+												<select class="form-control" [disabled]="statutValue" (change)="changerStatut($event)" [(ngModel)]="statut">
+													<option *ngFor="let value of values" [value]="value">{{value}}</option>
+												  </select>
+											</div>
+										</span>
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+					
+					</div>
+				</div>
+
+				<div class="print imprime" >
+					<a class="print-button " (click)="testprintpdf()">
+						<i class="fa fa-print"></i>
+						Imprimer
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<ng-template #docModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Justificatif de reception</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body text-center" *ngIf="justificatif && justificatif.length>0">
+            <img src="{{baseUrlImage+''+justificatif}}" class="img"/>
+        </div>
+        <div class="modal-footer">
+            <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button  class="btn btn-outline-secondary"
+                (click)="modal.dismiss('cancel click')">Annuler</button>
+            
+        </div>
+    </div>
+</ng-template>

@@ -1,0 +1,241 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+
+        <div class="container-fluid mt--7">
+            <div class="row">
+                <div class="col">
+                    <div class="card shadow ">
+                        <div class="card-header border-0">
+                            <div class="row justify-content-center">
+                                    <a routerLink="/fournisseurs/ajouter-fournisseur" class="btn btn-primary col-md-3">Ajouter
+                                        fournisseur</a>
+                                    <button (click)="open(exportModal)" class="btn btn-primary col-md-2">Exporter</button>
+                                
+                                    <button (click)="open(importModal)" class="btn btn-primary col-md-2">Importer</button>
+                                
+                            </div>
+                            <div class="row mt-5">
+                                <div class="col-md-3">
+                                    <mat-select class="mt-4" [(ngModel)]="activeFiltre" [value]="'1'"
+                                        name="filtre">
+                                        <mat-option class="filtre-text" value="1" (click)="filtre()">Actifs/Inactifs
+                                        </mat-option>
+                                        <mat-option class="filtre-text" [value]="'true'" (click)="filtre()">Fournisseurs actifs
+                                        </mat-option>
+                                        <mat-option class="filtre-text" [value]="'false'" (click)="filtre()">Fournisseurs
+                                            inactifs
+                                        </mat-option>
+                                    </mat-select>
+                                </div>
+                                <div class="col-md-3">
+                                    <mat-select class="mt-4" [(ngModel)]="typefiltre" [value]="'1'"
+                                        name="filtre">
+                                        <mat-option class="filtre-text" value="1" (click)="filtre()">Catégorie</mat-option>
+                                        <mat-option *ngFor="let item of typeList" class="filtre-text" [value]="item.ref"
+                                            (click)="filtre()">{{item.name}}</mat-option>
+                                    </mat-select>
+                                </div>
+                                <div class="col-md-2">
+                                    <mat-select class="mt-4" [(ngModel)]="fourfiltre" [value]="'1'"
+                                        name="filtre">
+                                        <mat-option class="filtre-text" value="1" (click)="filtre()">Tous</mat-option>
+                                        <mat-option class="filtre-text" [value]="'true'" (click)="filtre()">Fournisseurs locale
+                                        </mat-option>
+                                        <mat-option class="filtre-text" [value]="'false'" (click)="filtre()">Fournisseurs
+                                            etranger
+                                        </mat-option>
+                                    </mat-select>
+                                </div>
+                                <div class="col-md-3">
+                                    <form
+                                        class="navbar-search navbar-search-light form-inline mr-3 d-none d-md-flex ml-lg-auto mt-3">
+                                        <div class="form-group mb-0" [ngClass]="{ 'focused': focus === true }">
+                                            <div class="input-group input-group-alternative">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                                </div>
+                                                <!--(keyup)="doFilter($event.target.value)" (blur)="focus = false" (focus)="focus = true"-->
+                                                <input class="form-control" placeholder="Rechercher" type="text" #input>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="product">
+                            <mat-card *ngIf="dataSource.loading$ | async" style="display: flex; justify-content: center; align-items: center;">
+                                <mat-progress-spinner diameter="40" 
+                                  mode="indeterminate">
+                                </mat-progress-spinner>
+                              </mat-card>
+        
+                            <table mat-table [dataSource]="dataSource" matSort
+                                class="table  mat-elevation-z8 align-items-center table-flush">
+                                <!-- Name Column -->
+                                <ng-container matColumnDef="ref">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        {{element.ref}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="categorie">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Categorie</th>
+                                    <td mat-cell *matCellDef="let element" >
+                                        {{getCatName(element.categorie)}} </td>
+                                </ng-container>
+                                <!-- Name Column -->
+                                <ng-container matColumnDef="name">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Raison sociale</th>
+                                    <td mat-cell *matCellDef="let element" (click)="displayFournisseur(element)">
+                                        {{element.name}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="type">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Etranger/Local</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <span *ngIf="element.type">Local</span>
+                                        <span *ngIf="!element.type">Etranger</span>
+                                    </td>
+                                </ng-container>
+                               
+                                
+                                <!-- Date Column -->
+                                <ng-container matColumnDef="tel">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>N°.Tel</th>
+                                    <td mat-cell *matCellDef="let element">{{element.tel}}</td>
+                                </ng-container>
+                                <!-- Active Column -->
+                                <ng-container matColumnDef="active">
+                                    <th mat-header-cell *matHeaderCellDef>Statut</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <span class="badge badge-success" *ngIf="element.active">Actif</span>
+                                        <span class="badge badge-danger" *ngIf="!element.active">Inactif</span>
+                                    </td>
+                                </ng-container>
+                                
+                                <!-- Action Column -->
+                                <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef> Action </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div ngbDropdown placement="bottom-right">
+                                            <button class="btn btn-sm btn-icon-only text-light" ngbDropdownToggle>
+                                                <i class="ni ni-active-40 text-blue font-icon"></i>
+                                            </button>
+                                            <div ngbDropdownMenu class="dropdown-menu-right dropdown-menu-arrow">
+                                                <a class="dropdown-item" routerLink="/fournisseurs/update-fournisseur"
+                                                    [queryParams]="{id: element._id}">Consulter les informations</a>
+                                                <a class="dropdown-item" routerLink="/fournisseurs/historique-fournisseur"
+                                                    [queryParams]="{id: element._id}">Consulter l'historique</a>
+                                                <button class="dropdown-item"
+                                                    (click)="deleteFournisseur=element;open(deleteModal)">Desactiver</button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index;"></tr>
+                            </table>
+        
+        
+                        </div>
+                        <div class="card-footer py-4">
+                            <mat-paginator [length]="fournisseursLength" [pageSize]="5" [pageSizeOptions]="[5,10]">
+                            </mat-paginator>
+                            <!-- <mat-paginator (page)="pageChangeEvent($event)" [pageSizeOptions]="[3]" showFirstLastButtons></mat-paginator>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+           
+
+       
+    
+
+
+
+
+<!--MODAL DESACTIVER-->
+<ng-template #deleteModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Désactivation fournisseur</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" *ngIf="deleteFournisseur">
+            <p><strong>Est vous sur de vouloir désactivé le fournisseur <span
+                        class="text-primary">"{{deleteFournisseur.name}}"</span> ?</strong></p>
+        </div>
+        <div class="modal-footer">
+            <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button class="btn btn-outline-secondary"
+                (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button type="button" class="btn btn-danger" (click)="deletefournisseurs()">Désactiver</button>
+        </div>
+    </div>
+</ng-template>
+
+
+
+<!--MODAL export-->
+<ng-template #exportModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Téléchargement de la liste des fournisseurs</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p><strong>Vous êtes sur de vouloir télécharger la liste ?</strong></p>
+        </div>
+        <div class="modal-footer">
+            <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button class="btn btn-outline-secondary"
+                (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button [disabled]="exporting" type="button" class="btn btn-primary" (click)="exporter('excel')"><i
+                    *ngIf="exporting" class="fa fa-spinner fa-spin mr-2"></i>Télécharger</button>
+        </div>
+    </div>
+</ng-template>
+
+<!--MODAL import-->
+<ng-template #importModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Importation des fournisseurs</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <h4><strong>Le fichier doit contenir les colones comme indiquer dans l'image ci dessous. sauf la "note" tout
+                    est requis.</strong></h4>
+            <img class="img-fluid" src="./assets/img/example-list.jpg" />
+            <a href="./assets/files/liste_des_fournisseurs-example.xlsx"
+                class="float-left btn btn-secondary mt-2 mb-n4"><i *ngIf="exporting"
+                    class="fa fa-download fa-spin mr-2"></i>Télécharger le fichier exemple</a>
+
+        </div>
+        <div class="modal-footer mt-n2">
+            <div class="custom-file">
+                <input type="file" id="file" class="custom-file-input" lang="fr"
+                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                    (change)="handleFileInput($event.target.files)">
+                <label class="custom-file-label" for="file">Fichier à importer</label>
+            </div>
+            <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button class="btn btn-outline-secondary"
+                (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button [disabled]="importing || !fileToUpload" type="button" class="btn btn-primary"
+                (click)="importer()"><i *ngIf="importing" class="fa fa-spinner fa-spin mr-2"></i>Importer</button>
+        </div>
+    </div>
+</ng-template>

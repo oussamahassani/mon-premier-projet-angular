@@ -1,0 +1,136 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+<div class="receipt-content" style="background: transparent;margin-top: -200px;">
+	<div class="snippet">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="invoice-wrapper">
+					<div class="payment-info">
+						<div class="row">
+							<div class="col-sm-6">
+								<span>No. Inventaire</span>
+								<strong *ngIf="inventaire">{{inventaire.num}}</strong>
+							</div>
+							<div class="col-sm-6 text-right">
+								<span>Période de l'inventaire</span>
+								<strong *ngIf="inventaire">Du {{inventaire.date_inventaire | date}} au
+									{{inventaire.createdAt | date}}</strong>
+							</div>
+						</div>
+					</div>
+
+					<div class="payment-details">
+						<div class="row" *ngIf="user && inventaire">
+							<div class="col-sm-6">
+								<p class="client-info">
+									<span class="info-label">Nom : </span>
+									<span class="info-text">{{user.fname}} {{user.lname}}</span>
+								</p>
+								<p class="client-info">
+									<span class="info-label">Resultat : </span>
+									<span class="info-text text-success" *ngIf="inventaire.resultat">Bonus
+										d'inventaire</span>
+									<span class="info-text text-danger" *ngIf="!inventaire.resultat">Malus
+										d'inventaire</span>
+								</p>
+								<p class="client-info">
+									<span class="info-label">Pourcentage de: </span>
+									<span class="info-text text-success" *ngIf="inventaire.resultat">Bonus
+										{{inventaire.pourcentage | number:'2.2-2'}}%</span>
+									<span class="info-text text-danger" *ngIf="!inventaire.resultat">Perte
+										{{inventaire.pourcentage | number:'2.2-2'}}%</span>
+								</p>
+							</div>
+							<div class="col-sm-6">
+								<div class="float-right">
+									<p class="client-info">
+										<span class="info-label" *ngIf="!inventaire.resultat">Perte total (HT) : </span>
+										<span class="info-label" *ngIf="inventaire.resultat">Bonus total (HT) : </span>
+										<span class="info-text">{{inventaire.total | number:'0.3-3'}}</span>
+									</p>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="line-items">
+						<div class="headers clearfix">
+							<div class="row header-matiere">
+								<div class="col">N°Mat</div>
+								<div class="col">Reference</div>
+								<div class="col">Nom</div>
+								<div class="col">Nbr Lot</div>
+								<div class="col">Stock theorique</div>
+								<div class="col">Stock reel</div>
+								<div class="col">CMP</div>
+
+							</div>
+							<div class="row mt-2 mb-2" *ngFor="let mat of matieres;let i=index">
+								<div class="row col-12 mat-holder">
+									<div class="col"><strong>Matiere {{i+1}}</strong></div>
+									<div class="col">{{mat.reference}}</div>
+									<div class="col">{{mat.designation}}</div>
+									<div class="col">{{mat.lots_nbr}}</div>
+									<div class="col">{{mat.stock}}</div>
+									<div class="col">{{mat.stock_reel}}</div>
+									<div class="col">{{calculCMP(mat) | number}}</div>
+								</div>
+								<div class="table-responsive mt-2 ml-5 mr-5" *ngIf="mat.lots_nbr>0">
+									<table class="table align-items-center table-flush">
+										<thead class="thead-light">
+											<tr>
+												<th scope="col">N° Lot</th>
+												<th scope="col">Code</th>
+												<th scope="col">Quantite theorique</th>
+												<th scope="col">Quantite reel</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let lot of mat.lots;let j=index">
+												<td>
+													<strong>Lot {{j+1}}</strong>
+												</td>
+												<td class="mb-0 text-sm">
+
+													{{lot.code}}
+												</td>
+												<td>
+													{{lot.stock_theorique}}
+
+												</td>
+												<td>
+													{{lot.stock_reel}}
+												</td>
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+
+
+							</div>
+						</div>
+
+						<div class="print">
+							<a class="print-button" (click)="printWindow()">
+								<i class="fa fa-print"></i>
+								Imprimer
+							</a>
+						</div>
+					</div>
+				</div>
+
+
+
+			</div>
+		</div>
+	</div>
+	</div>
+</div>

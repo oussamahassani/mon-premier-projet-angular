@@ -1,0 +1,124 @@
+.side-pointer{
+    cursor:pointer;
+}
+.nav-link{
+    cursor:pointer;
+}
+
+
+
+/*.scroll {
+    height: auto;
+    width: 270px;
+    max-height: 275px;
+    overflow: scroll;
+}*/
+/* width */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    border-radius: 8px;
+
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(228, 225, 225); 
+    border-radius: 10px;
+
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(173, 170, 170); 
+}
+
+::-webkit-scrollbar:hover {
+    width: 10px;
+}
+.material-icons{
+    font-size: 24px;
+    float: left;
+    margin-right: 0px;
+    line-height: 30px;
+    width: 30px;
+    text-align: center;
+    color: #a9afbb;
+}
+
+
+.longtext {
+    display: inline-block;
+    max-width: 125px;
+    width: auto;
+    white-space: nowrap;
+    vertical-align: middle;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+.takeleft{
+    margin-left: -15px !important;
+}
+
+p{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom:0 !important;
+}
+
+::ng-deep.mat-icon {
+    position: absolute;
+    right: 0;
+    margin-top: 5px;
+}
+p {
+    margin: 0;
+    line-height: 30px;
+    font-size: 14px;
+  
+    display: block;
+    height: auto;
+    white-space: nowrap;
+}
+#saker {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+  }
+#saker.toggled {
+    padding-left: 0px;
+  }
+#sake {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+  }
+#sake.toggled {
+    padding-left: -250px;
+  }
+.navbar-nav li.active>[data-toggle=collapse],
+.navbar-nav li  a:focus,
+.navbar-nav li  a:hover,
+.navbar-nav li:hover>a {
+    background-color: hsla(0,0%,78.4%,.2);
+    color: #3c4858;
+    box-shadow: none;
+}
+
+.collapse{
+max-width: 20px !important;
+display: none;
+}
+
+
+
+
+

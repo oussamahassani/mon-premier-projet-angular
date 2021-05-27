@@ -1,0 +1,262 @@
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+    style="min-height: 200px; background-size: cover; background-position: center top;">
+    <!-- Mask -->
+    <span class="mask bg-gradient-danger opacity-8"></span>
+    <!-- Header container -->
+    <div class="container-fluid d-flex align-items-center">
+        <div class="row">
+            <div class="col-lg-7 col-md-10">
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+    <div class="row">
+        <div class="col-xl-3 order-xl-2 mb-5 mb-xl-0">
+            <div class="card card-profile shadow">
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 order-lg-2">
+
+                        <div class="card-profile-image">
+                            <a>
+                                <img src="{{previewURL}}" class="rounded-circle">
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+                    <div class="d-flex justify-content-between">
+
+
+                    </div>
+                </div>
+                <div class="card-body pt-0 pt-md-4">
+                    
+                    <div class="row">
+                        <div class="col">
+                            <div class="card-profile-stats d-flex justify-content-center mt-md-5">
+                                <div>
+                                    <div class="custom-file">
+                                        <input #imageInput placeholder="Logo fournisseur" accept="image/*" lang="fr"
+                                            (change)="addImage(imageInput)" type="file" class="custom-file-input"
+                                            id="customFile">
+                                        <label class="custom-file-label text-left" for="customFile">Logo</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-9 order-xl-1">
+            <div class="card bg-secondary shadow">
+                <div class="card-header bg-white border-0">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 class="mb-0" *ngIf="fournisseur">Fournisseur: {{fournisseur.name}}</h3>
+                        </div>
+                        <div class="col-4 text-right">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                   
+                    
+                    <form [formGroup]="formFournisseur">
+                        <!-- Description -->
+                        <h6 class="heading-small text-muted mb-4">Catégorie du fournisseur</h6>
+                        <div class="pl-lg-4 row">
+                            <div class="col-lg-6">
+                                <div>Catégorie du fournisseur<span class="champs-obligatoire">*</span> :</div>
+                            </div>
+                            <div class="col-lg-6">
+                                <mat-form-field class="top-100">
+                                    <mat-select formControlName="categorie"
+                                        [ngClass]="{ 'is-invalid': ft.categorie.errors && ft.categorie.touched }">
+                                        <mat-option disabled value="">Categorie</mat-option>
+                                        <mat-option *ngFor="let item of typeList" [value]="item.ref">{{item.name}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <div *ngIf="ft.categorie.errors && ft.categorie.touched" class="invalid-feedback">
+                                    <div *ngIf="ft.categorie.errors.required">La catégorie est requise</div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-4" />
+                        <h6 class="heading-small text-muted mb-2">Adresse du fournisseur</h6>
+                        <div class="pl-lg-4">
+                            <div class="row mb-2">
+                                <div class="col-lg-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" formControlName="type" name="type"
+                                            id="exampleRadios1" [value]="true" checked>
+                                        <label class="form-check-label" for="exampleRadios1">
+                                            Fournisseur locale
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" formControlName="type" name="type"
+                                            id="exampleRadios2" [value]="false">
+                                        <label class="form-check-label" for="exampleRadios2">
+                                            Fournisseur étranger
+                                        </label>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group" *ngIf="ft.type.value">
+
+                                        <mat-form-field class="top-100">
+                                            <mat-select formControlName="place">
+                                                <mat-option disabled value="">Zone*</mat-option>
+                                                <mat-optgroup *ngFor="let group of stateGroups" [label]="group.letter">
+                                                    <mat-option *ngFor="let name of group.names" [value]="name">
+                                                        {{name}}
+                                                    </mat-option>
+                                                </mat-optgroup>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <div *ngIf="ft.place.errors && ft.place.touched" class="invalid-feedback">
+                                            <div *ngIf="ft.place.errors.required">La zone est requise</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" *ngIf="ft.type.value==false">
+                                        <mat-form-field class="top-100">
+                                            <mat-select formControlName="place">
+                                                <mat-option disabled value="">Pays*</mat-option>
+                                                <mat-option *ngFor="let option of countries" [value]="option">
+                                                    {{option}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <div *ngIf="ft.place.errors && ft.place.touched" class="invalid-feedback">
+                                            <div *ngIf="ft.place.errors.required">Le pays est requis</div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <label for="adress">Adresse <span class="champs-obligatoire">*</span></label>
+                                <textarea type="text" formControlName="adresse" name="adress" rows="3"
+                                    class="form-control" placeholder="Saisir une note" value=""
+                                    [ngClass]="{ 'is-invalid': ft.adresse.errors && ft.adresse.touched }"></textarea>
+                                <div *ngIf="ft.adresse.errors && ft.adresse.touched" class="invalid-feedback">
+                                    <div *ngIf="ft.adresse.errors.required">Adresse est requise</div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-4" />
+                        <h6 class="heading-small text-muted mb-4">Information du fournisseur</h6>
+                        <div class="pl-lg-4">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="ref">Référence<span
+                                                class="champs-obligatoire">*</span></label>
+                                        <input type="text" formControlName="ref" disabled name="ref" class="form-control"
+                                            placeholder="Référence du fournisseur" value=""
+                                             />
+                                       
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Raison sociale<span
+                                                class="champs-obligatoire">*</span></label>
+                                        <input type="text" formControlName="name" name="name" class="form-control"
+                                            placeholder="Saisir le nom du fournisseur*" value=""
+                                            [ngClass]="{ 'is-invalid':ft.name.errors && ft.name.touched }" />
+                                        <div *ngIf="ft.name.errors && ft.name.touched" class="invalid-feedback">
+                                            <div *ngIf="ft.name.errors.required">Raison sociale requise</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email<span class="champs-obligatoire">*</span></label>
+                                        <input type="text" formControlName="email" name="email" class="form-control"
+                                            placeholder="Saisir l'email du fournisseur*" value=""
+                                            [ngClass]="{ 'is-invalid':ft.email.errors && ft.email.touched }" />
+                                        <div *ngIf="ft.email.errors && ft.email.touched" class="invalid-feedback">
+                                            <div *ngIf="ft.email.errors.required">L'email est requis</div>
+                                            <div *ngIf="ft.email.errors.email">L'email n'est pas valide</div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="mat_fis">Matricule Fiscale<span
+                                                class="champs-obligatoire">*</span></label>
+                                        <input type="text" formControlName="mat_fis" name="mat_fis" class="form-control"
+                                            placeholder="Saisir la matricule fiscale*" value=""
+                                            [ngClass]="{ 'is-invalid':ft.mat_fis.errors && ft.mat_fis.touched }" />
+                                        <div *ngIf="ft.mat_fis.errors && ft.mat_fis.touched" class="invalid-feedback">
+                                            <div *ngIf="ft.mat_fis.errors.required">Matricule fiscale est requise</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="tel">Telephone<span class="champs-obligatoire">*</span></label>
+                                        <input type="number" onkeypress="return event.charCode >= 48" min="1"
+                                            formControlName="tel" name="tel" class="form-control"
+                                            placeholder="Numero de telephone*" value=""
+                                            [ngClass]="{ 'is-invalid':ft.tel.errors && ft.tel.touched }" />
+                                        <div *ngIf="ft.tel.errors && ft.tel.touched" class="invalid-feedback">
+                                            <div *ngIf="ft.tel.errors.required">Telephone est requis</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="note">Note</label>
+                                        <textarea type="text" formControlName="note" name="note" rows="3"
+                                            class="form-control" placeholder="Saisir une note" value=""
+                                            [ngClass]="{ 'is-invalid': ft.note.errors && ft.note.touched }"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button (click)="onUpdateFournisseurSubmit()"
+                            [ngClass]="{ 'btn-danger': formFournisseur.invalid , 'btn-success': !formFournisseur.invalid}"
+                            [disabled]="formFournisseur.invalid"
+                                type="submit" class="btn btn-danger pull-right">Mettre a jour fournisseur</button>
+                        </div>
+                    </form>
+                    <hr class="my-4" />
+                    <div class="row">
+                        <h6 class="heading-small text-muted mb-4">Liste des matieres</h6>
+                        <div class="table-responsive" *ngIf="matieres">
+                            <h2 *ngIf="matieres.length==0">Aucune matiére pour l'instant</h2>
+                            <table class="table align-items-center table-flush" *ngIf="matieres.length>0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <!--'reference','label','stock','lots','createdAt', 'action'-->
+                                        <th scope="col">Reference</th>
+                                        <th scope="col">Designation</th>
+                                        <th scope="col">Prix (hors taxe)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let matiere of matieres;let i=index">
+                                        <td class="mb-0 text-sm"> {{matiere.reference}}</td>
+
+                                        <td>
+                                            {{matiere.designation}}
+                                        </td>
+                                        <td>
+                                            {{getPrice(matiere._id) | number:'0.3-3'}}
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

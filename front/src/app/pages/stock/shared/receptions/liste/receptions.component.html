@@ -1,0 +1,186 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+            <mat-slide-toggle   color="primary" on-change="toggledtype()" > {{valeurtypedemande}}  </mat-slide-toggle>
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header border-0 disp-flex">
+                    <div class="mb-0 col-md-6">
+                        <h3>Gestion bon de receptions</h3>
+                        <p *ngIf="valeurtypedemande =='stock'">{{bonreceptionsLength}} Bon receptions</p>
+                        <p *ngIf="valeurtypedemande =='service'">{{bonreceptionsserviceLength}} Bon receptions</p>
+                        <div class="row">
+                            <mat-select class="col-md-6" ngModel="0">
+                                <mat-option class="filtre-text" value="0" (click)="getStatut(0)">Tous</mat-option>
+                                <mat-option class="filtre-text" value="1"(click)="getStatut('Recu')">Réçu</mat-option>
+                                <mat-option class="filtre-text" value="2" (click)="getStatut('attente')">En Attente</mat-option>
+                                </mat-select>
+                            <mat-select class="col-md-6" ngModel="0">
+                                <mat-option class="filtre-text" value="0" (click)="getfour(0)">Tous</mat-option>
+                                <mat-option class="filtre-text" *ngFor="let four of fours" [value]="four._id"(click)="getfour(four._id)">{{four.name}}</mat-option>
+                                </mat-select>
+                    </div>
+                    </div>
+                    <div class="mb-0" style="display:grid">
+                        <button class="btn btn-sm btn-primary" [disabled]="this.selectedItems.length==0"
+                            (click)="grouperFacture()">Grouper Facture</button>
+                        <form
+                            class="navbar-search navbar-search-light form-inline mr-3 d-none d-md-flex ml-lg-auto mt-3">
+                            <div class="form-group mb-0" [ngClass]="{ 'focused': focus === true }">
+                                <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    </div>
+                                    <!--(keyup)="doFilter($event.target.value)" (blur)="focus = false" (focus)="focus = true"-->
+                                    <input class="form-control" placeholder="Rechercher" type="text" #input>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+                </div>
+                <div class="product">
+                    <table mat-table [dataSource]="datasource" matSort
+                        class="table  mat-elevation-z8 align-items-center table-flush">
+                        <ng-container matColumnDef="checked">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                <mat-checkbox aria-label="Select All" 
+                                    [checked]="isChecked()" [indeterminate]="isIndeterminate()" 
+                                    (change)="$event ? toggleAll($event) : null">
+                                </mat-checkbox>    
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-checkbox *ngIf="!element.facture_id && element.statut == 'Recu';else nocheckbox" (click)="$event.stopPropagation()"
+                                    (change)="$event ? toggle(element,$event) : null"
+                                    [checked]="exists(element)">
+                                </mat-checkbox>
+                                <ng-template #nocheckbox>
+                                    <span class="material-icons">
+                                        receipt
+                                        </span>
+                                </ng-template>
+
+                            </td>
+                        </ng-container>
+                        <!-- bonreception name Column -->
+                        <ng-container matColumnDef="num">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>N°.Bon </th>
+                            <td mat-cell *matCellDef="let element"> {{element.num}} </td>
+                        </ng-container>
+
+                        <!-- Fournisseur name Column -->
+                        <ng-container matColumnDef="fournisseur">
+                            <th mat-header-cell *matHeaderCellDef>Fournisseur</th>
+                            <td mat-cell *matCellDef="let element"> {{element.fournisseur.name}} </td>
+                        </ng-container>
+
+
+                        
+
+                        <!-- Prix total Column -->
+                        <ng-container matColumnDef="total_ht">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Total reçu (HT)</th>
+                            <td mat-cell *matCellDef="let element">{{element.total_ht | number:'0.3-3'}} </td>
+                        </ng-container>
+                        <!--Total prévu-->
+                        <!-- Fournisseur phone Column -->
+                        <ng-container matColumnDef="totalpr">
+                            <th mat-header-cell *matHeaderCellDef>Total prévu (HT)</th>
+                            <td mat-cell *matCellDef="let element"> {{calculPrix(element) | number:'0.3-3'}} </td>
+                        </ng-container>
+                        <!-- Prix total ht Column 
+                        <ng-container matColumnDef="total_tva">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> TVA</th>
+                            <td mat-cell *matCellDef="let element">{{element.total_tva | number:'0.3-3'}} </td>
+                        </ng-container>-->
+                        <!-- Products number Column -->
+                        <ng-container matColumnDef="ttc">
+                            <th mat-header-cell *matHeaderCellDef> Total (TTC) </th>
+                            <td mat-cell *matCellDef="let element">{{element.total_ht+element.total_tva | number:'0.3-3'}} </td>
+                        </ng-container>
+                        <!-- Created Column -->
+                        <ng-container matColumnDef="createdAt">
+                            <th mat-header-cell *matHeaderCellDef>Date </th>
+                            <td mat-cell *matCellDef="let element">{{element.createdAt | date}} </td>
+                        </ng-container>
+                        <!--['checked','num','fournisseur','tel','date_bonreception','total','tva','ttc','recu','action'];-->
+                        <!--Statut-->
+                        <ng-container matColumnDef="recu">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                            <td mat-cell *matCellDef="let element">
+                                <!--  (click)="facturerbonreception(element)"-->
+                                <span   class="{{element.statut}} badge-pile"></span>
+ 
+                               <!-- <span *ngIf="element.recu && !element.facture" class="btn btn-primary"
+                                  
+                                    target="_blank"
+                                routerLink="/receptions/voir-bon"
+                                            [queryParams]="{id: element._id}">Reçu</span>
+                                <a *ngIf="element.recu && element.facture && (!element.justif_reception || element.justif_reception.length==0)" class="btn btn-warning" target="_blank"
+                                routerLink="/receptions/voir-bon"
+                                            [queryParams]="{id: element._id}">Facturée</a>
+                                    <a *ngIf="element.recu && element.facture && element.justif_reception && element.justif_reception.length>0" class="btn btn-success" target="_blank"
+                                        routerLink="/receptions/voir-bon"
+                                                    [queryParams]="{id: element._id}" target="_blank"
+                                   >Facturée</a>
+
+                                <a *ngIf="element.enAttente" class="btn btn-warning" target="_blank"
+                                    routerLink="/receptions/voir-bon" [queryParams]="{id: element._id}">En
+                                    Attente</a>-->
+
+                            </td>
+                        </ng-container>
+                        <!-- Action Column -->
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef> Action </th>
+                            <td mat-cell *matCellDef="let element">
+                                <div ngbDropdown placement="bottom-right">
+                                    <button class="btn btn-sm btn-icon-only text-light" ngbDropdownToggle>
+                                        <i class="ni ni-active-40 text-blue font-icon"></i>
+                                    </button>
+                                    <div ngbDropdownMenu class="dropdown-menu-right dropdown-menu-arrow">
+                                        <a *ngIf="valeurtypedemande =='stock'" target="_blank" routerLink="voir-bon"
+                                            [queryParams]="{id: element._id}" class="dropdown-item">Consulter</a>
+                                        <a  *ngIf="valeurtypedemande =='service'"  target="_blank" routerLink="voirservice-bon"
+                                        [queryParams]="{id: element._id}" class="dropdown-item">Consulter</a>
+                                        <div class="dropdown-item"
+                                            *ngIf="!element.justif_reception || element.justif_reception.length==0 ">
+                                            <input #recInput (change)="addReceptionFile(recInput,element._id)"
+                                                type="file" name="file" id="file" class="inputfile" />
+                                            <label for="file">Télécharger justificatif de reception</label>
+                                        </div>
+
+                                        <div class="dropdown-item"
+                                            *ngIf="element.justif_reception && element.justif_reception.length>0"
+                                            (click)="voirImage(element.justif_reception)">
+                                            <span>Voir justificatif de reception</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                       
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index;"></tr>
+                    </table>
+
+
+                </div>
+                <div class="card-footer py-4">
+                    <mat-paginator [pageSizeOptions]="[5,10]" showFirstLastButtons></mat-paginator>
+                 
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

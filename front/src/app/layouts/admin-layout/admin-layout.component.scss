@@ -1,0 +1,87 @@
+::ng-deep.mat-snack-bar-container {
+    position:absolute;
+    top:30%;
+    left:44%;
+}
+
+
+////navtoggle
+.navToggle{
+    background: 0;
+    z-index: 1050;
+    background-color: white;
+    color: #6B778C;
+    border: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px rgba(9, 30, 66, 0.08), 0 2px 4px 1px rgba(9, 30, 66, 0.08);
+    cursor: pointer;
+    height: 35px;
+    width: 35px;
+    opacity: 1;
+    outline: 0;
+    transform: rotate(90);
+    padding: 0;
+    position: fixed;
+    left: 232px;
+    top: 73px;
+    transition: background-color 100ms linear 0s, color 100ms linear 0s, opacity 300ms cubic-bezier(0.2, 0, 0, 1) 0s, transform 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
+}
+
+
+
+.open{
+    margin-left: 5px !important;
+}
+
+.leftSide{
+    left:5px !important;
+    background: 0;
+    background-color: white;
+    border: 0;
+    border-radius: 50%;
+    z-index: 999999;
+    box-shadow: 0 0 0 1px rgba(9,30,66,0.08), 0 2px 4px 1px rgba(9,30,66,0.08);
+    color: #6B778C;
+    cursor: pointer;
+    opacity: 1;
+    outline: 0;
+    padding: 0;
+    position: fixed;
+    top: 73px;
+    -webkit-transition: background-color 100ms linear, color 100ms linear, opacity 300ms cubic-bezier(0.2,0,0,1), transform 300ms cubic-bezier(0.2,0,0,1);
+    transition: background-color 100ms linear, color 100ms linear, opacity 300ms cubic-bezier(0.2,0,0,1), transform 300ms cubic-bezier(0.2,0,0,1);
+    -webkit-transform: translate(-50%);
+    -ms-transform: translate(-50%);
+    transform: translate(-50%);
+    height: 35px;
+    width: 35px;
+}
+
+.leftSide:hover{
+    background-color: #4C9AFF;
+    color: white;
+}
+
+.navToggle:hover{
+    background-color: #4C9AFF;
+    color: white;
+}
+
+.arrow{
+    position: absolute;
+    left: -8px;
+    right: -12px;
+    bottom: -8px;
+    top: -8px;
+}
+
+.innerArrow{
+    color: currentcolor;
+    display: inline-block;
+    fill: rgb(255, 255, 255);
+    flex-shrink: 0;
+    line-height: 1;
+    margin: 16px;
+    margin-left: 12px;
+    font-size: 17px;
+}

@@ -1,0 +1,150 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+<div class="receipt-content" style="background: transparent;margin-top: -200px;">
+    <div class="snippet">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="invoice-wrapper">
+                    <div class="payment-info">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>No. Demande</span>
+                                <strong *ngIf="demand">{{demand.num}}</strong>
+
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <span>Date de création</span>
+                                <strong *ngIf="demand">{{demand.createdAt | date:'medium'}}</strong>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="line-items">
+                        <div class="headers clearfix">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table align-items-center table-flush">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <!--'reference','label','stock','lots','createdAt', 'action'-->
+                                                <th scope="col">Reference</th>
+                                                <th scope="col">Nom</th>
+                                                <th scope="col">Stock</th>
+                                                <th scope="col">Stock min</th>
+                                                <th scope="col">Stock max</th>
+                                                <th scope="col">Prix (hors taxe)</th>
+                                                <th scope="col">TVA (%)</th>
+                                                <th scope="col">Quantite</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngIf="matieres">
+                                            <tr *ngFor="let matiere of matieres;let i=index">
+                                                <td class="mb-0 text-sm"> {{matiere.reference}}</td>
+
+                                                <td>
+                                                    {{matiere.designation}}
+                                                </td>
+                                                <td>
+                                                    {{matiere.stock}}
+                                                </td>
+                                                <td>
+                                                    {{matiere.stock_securite}}
+                                                </td>
+                                                <td>
+                                                    {{matiere.stock_max}}
+                                                </td>
+                                                <td>
+                                                    {{matiere.prix_achat | number:'0.3-3'}}
+                                                </td>
+                                                <td>
+                                                    {{matiere.tva}} %
+                                                </td>
+                                                <td>
+                                                    {{getMatAsked(matiere._id)}}
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="total text-right">
+
+                            <div>
+
+                            </div>
+                        </div>
+
+                        <div class="row total">
+                            <div class="col-sm-6">
+                                <p class="extra-notes">
+                                    <strong>Notes extra</strong>
+                                    <textarea *ngIf="demand" rows="4" disabled [(ngModel)]="demand.note" cols="50"></textarea>
+
+
+                                </p>
+                            </div>
+                            <div class="col-sm-6 text-right">
+
+                                <span *ngIf="userone">Crée par : {{userone.fname}} {{userone.lname}}</span><br/>
+                                <span *ngIf="user && demand.statut==='Confirmed'">Confirmée par {{user.fname}} {{user.lname}}</span><br/>
+                                <span *ngIf="user && demand.statut==='Canceled'">Rejetée par {{user.fname}} {{user.lname}}</span><br/>
+                            </div>
+
+                        </div>
+                        <div class="print d-flex" *ngIf="demand">
+                            <button class="btn btn-danger" *ngIf="demand.statut!='Confirmed' && demand.statut!='Canceled' &&  !demand.isCommand"
+                                (click)="open(retirerModal)">Rejeter</button><br />
+
+                            
+                            <button class="btn btn-success" (click)="confirmDemande()" *ngIf="demand.statut!='Confirmed' && !demand.isCommand && demand.statut!='Canceled'">Confirmer</button><br />
+                            <button class="btn btn-success" *ngIf="!demand.demandeprix && demand.statut!='Canceled'" routerLink="/Demandedeparix/add" [queryParams]="{id : id ,categorie:'stock'}" style="float: right;">Faire un  Demande de prix</button>
+                            <button type="button" class="btn btn-success" *ngIf="demand.statut==='Confirmed' && !demand.isCommand && demand.statut!='Canceled'"  routerLink="../add-commandeap"
+                            [queryParams]="{id: demand._id}">Créer un bon de commande</button>
+                            <span *ngIf="demand.isCommand">Les commandes ont été créer</span>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!--MODAL RETIRER PRODUCTION-->
+<ng-template #retirerModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Rejet de demande</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form >
+                <div class="form-group">
+                    <label for="note_retirer">Veuillez saisir la raison de rejet :</label><br/>
+                    <textarea rows="4" name="note_retirer" placeholder="Ex..." [(ngModel)]="demand.note" cols="50"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button class="btn btn-outline-secondary"
+                (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button type="button" class="btn btn-danger" (click)="rejectDemande()">Rejeter</button>
+        </div>
+    </div>
+</ng-template>

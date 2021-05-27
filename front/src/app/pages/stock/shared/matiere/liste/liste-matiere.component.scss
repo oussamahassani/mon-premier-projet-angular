@@ -1,0 +1,29 @@
+.disp-flex{
+    display: flex;
+    justify-content: space-between;
+}
+
+::ng-deep.modal-dialog {
+    max-width: 80%;
+    margin: 1.75rem auto;
+}
+
+.font-icon{
+    font-size:18px;
+}
+::ng-deep.table thead th {
+    text-transform:none;
+}
+
+.image-produit{
+    height:80px;
+    width:90px;
+    padding:5px;
+}
+
+.alertstock{
+    background-color:#a05353;
+}
+.colorwhite{
+    color: white;
+}

@@ -1,0 +1,139 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+  <div class="container-fluid">
+    <div class="header-body">
+
+    </div>
+  </div>
+</div>
+<div class="container-fluid mt--7">
+  <div class="row">
+
+    <div class="col">
+      <div class="card shadow">
+        <div class="card-header card-header-danger">
+          <h4 class="card-title">Ajouter Groupe</h4>
+          <p class="card-category">Nouveau</p>
+        </div>
+        <div class="card-body">
+          <form class="row" [formGroup]="form" (ngSubmit)="onSubmit()" style="justify-content: center;">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="name">Le nom du groupe :</label>
+                <input type="text" formControlName="groupename" name="name" class="form-control"
+                  placeholder="Saisir le nom du groupe*" value="" />
+                <div *ngIf="!form.controls.groupename.valid && form.controls.groupename.errors">Le nom est requis</div>
+
+
+              </div>
+
+              <div class="form-group">
+                <mat-form-field>
+                  <mat-select placeholder="Clients" formControlName="clients" multiple>
+                    <mat-option value="clientszone">
+                      Consulter (Toute les zones)
+                    </mat-option>
+                    <mat-option value="clientsnozone">
+                      Consulter (Zones spécifiques)
+                    </mat-option>
+                    <mat-option *ngFor="let permo of permissionslist" [value]="'clients'+permo[1]">
+                      {{permo[0]}}
+                    </mat-option>
+
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="form-group">
+                <mat-form-field>
+                  <mat-select placeholder="Utilisateurs" formControlName="users" multiple>
+                    <mat-option value="usersview">
+                      Consulter
+                    </mat-option>
+                    <mat-option *ngFor="let permo of permissionslist" [value]="'users'+permo[1]">{{permo[0]}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="form-group">
+                <mat-form-field>
+                  <mat-select placeholder="Groupes" formControlName="groupes" multiple>
+                    <mat-option value="groupesview">
+                      Consulter
+                    </mat-option>
+                    <mat-option *ngFor="let permo of permissionslist" [value]="'groupes'+permo[1]">{{permo[0]}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <mat-form-field>
+                  <mat-select placeholder="Produits" formControlName="products" multiple>
+                    <mat-option value="productsview">
+                      Consulter
+                    </mat-option>
+                    <mat-option *ngFor="let permo of permissionslist" [value]="'products'+permo[1]">{{permo[0]}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="form-group">
+                <mat-form-field>
+                  <mat-select placeholder="Commands" formControlName="commands" multiple>
+                    <mat-option value="commandsconfirmedview">
+                      Consulter (Confirmées)
+                    </mat-option>
+                    <mat-option value="commandsonlyview">
+                      Consulter (Commandes émises par l'utilisateur)
+                    </mat-option>
+                    <mat-option value="commandsview">
+                      Consulter (Toutes les commandes)
+                    </mat-option>
+
+                    <mat-option *ngFor="let permo of permissionslist" [value]="'commands'+permo[1]">{{permo[0]}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="form-group">
+                <mat-form-field>
+                  <mat-select placeholder="Bon de livraison" formControlName="livraisons" multiple>
+                    <mat-option value="livraisonsview">
+                      Consulter
+                    </mat-option>
+                    <mat-option value="livraisonsonlyview">
+                      Consulter (Bon de livraison créé par l'utilisateur)
+                    </mat-option>
+                    <mat-option *ngFor="let permo of permissionslist" [value]="'livraisons'+permo[1]">{{permo[0]}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="form-group">
+                <mat-form-field>
+                  <mat-select placeholder="Factures" formControlName="factures" multiple>
+                    <mat-option value="facturesview">
+                      Consulter
+                    </mat-option>
+                    <mat-option value="facturesonlyview">
+                      Consulter (Factures créé par l'utilisateur)
+                    </mat-option>
+                    <mat-option *ngFor="let permo of permissionslist" [value]="'factures'+permo[1]">{{permo[0]}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <button mat-raised-button type="submit" [disabled]="!form.dirty"
+              class="btn btn-danger pull-right">Sauvegarder</button>
+            <div class="clearfix"></div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

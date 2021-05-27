@@ -1,0 +1,97 @@
+
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+<div class="receipt-content" style="background: transparent;margin-top: -200px;">
+    <div class="snippet">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="invoice-wrapper">
+                    <div class="payment-info">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>No. Demande</span>
+                                <strong>{{name}}</strong>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <span>Date de création</span>
+                                <strong>{{now | date:'medium'}}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="line-items">
+                        <div class="headers clearfix">
+                            <div class="row">
+                                <div class="table-responsive" style="background: white;">
+                                    <table class="table align-items-center table-flush">
+                                        <thead class="thead-light">
+                                            <tr>
+                                              
+                                                <th scope="col">Reference</th>
+                                                <th scope="col">Nom</th>
+                                                <th scope="col">Prix </th>
+                                                <th scope="col">TVA (%)</th>
+                                                <th scope="col">Quantite</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let service of services;let i=index">
+                                                <td class="mb-0 text-sm"> {{service.reference}}</td>
+
+                                                <td>
+                                                    {{service.designation}}
+                                                </td>
+                                                
+                                                <td>
+                                                    {{service.prix | number:'0.3-3'}}
+                                                </td>
+                                                <td>
+                                                    {{service.tva}} %
+                                                </td>
+                                                <td>
+                                                  {{service.quantiter}}
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                      <hr>
+
+                        <div class="row total mt-4">
+                            <div class="col-sm-6 d-flex align-items-center">
+                
+                                  <strong>Notes extra</strong>
+									<textarea rows="4" [(ngModel)]="note"
+										cols="50"></textarea>
+
+
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <span *ngIf="user">Crée par : {{user.fname}} {{user.lname}}</span>
+                            </div>
+
+                        </div>
+                        <div class="print mt-2">
+                            <button class="btn btn-success" (click)="submitDemande()">Sauvegarder</button><br />
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>

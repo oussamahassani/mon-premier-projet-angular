@@ -1,0 +1,183 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+<div class="receipt-content" style="background: transparent;margin-top: -200px;">
+	<div class="snippet">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="invoice-wrapper">
+					<div class="payment-info">
+						<div class="row">
+							<div class="col-sm-6">
+                                <span>Bon de commande</span>
+                                <strong *ngIf="command">{{command.num}}</strong>
+								
+							</div>
+							<div class="col-sm-6 text-right">
+								<span>Date commande</span>
+								<strong *ngIf="command">{{command.createdAt | date:'medium'}}</strong>
+							</div>
+						</div>
+					</div>
+<!--name,enCours,confirmed,canceled,active,recu,prix_ht,tva,creatorId,fournisseur,matieres,createdAt,updatedAt-->
+					<div class="payment-details">
+						<div class="row">
+							<div class="col-sm-6" *ngIf="command && command.fournisseur">
+								<p class="client-info">
+									<span class="info-label">Fournisseur : </span>
+									<span class="info-text">{{command.fournisseur.name}}</span>
+								</p>
+								<p class="client-info">
+									<span class="info-label">Telephone : </span>
+									<span class="info-text">{{command.fournisseur.tel}}</span>
+								</p>
+							</div>
+							<div class="col-sm-6" *ngIf="command && command.creatorId">
+								<div class="float-right">
+									<p class="client-info">
+										<span class="info-label">Createur : </span>
+										<span class="info-text">{{command.creatorId.fname}} {{command.creatorId.lname}}</span>
+									</p>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="line-items">
+						<div class="headers clearfix">
+							<div class="row">
+								<div class="table-responsive">
+									<table class="table align-items-center table-flush">
+										<thead class="thead-light">
+											<tr>
+												<th scope="col">Reference</th>
+												<th scope="col">Nom</th>
+												<th scope="col">Quantité Demandée</th>
+                                                <th scope="col">Prix HT (Mis a jour)</th>
+												<th scope="col">TVA</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let matiere of matieres;let i=index">
+												<td class="mb-0 text-sm">{{matiere.reference}}</td>
+
+												<td>
+													{{matiere.designation}}
+												</td>
+												<td>
+													{{getAskedQte(matiere._id)}}
+												</td>
+												<td>
+													{{getPrix(matiere._id)}}
+                                                </td>
+												<td>
+													{{matiere.tva}}%
+                                                </td>
+                                                
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+
+
+						<div class="total text-right">
+
+							<div>
+
+							</div>
+						</div>
+
+						<div class="row total">
+							<div class="col-sm-8">
+                                   
+							</div>
+							<div class="col-sm-4 text-right" *ngIf="command">
+								<div class="float-right">
+									<div class="field">
+										<span class="field-label">Montant hors taxe</span>
+										<span class="field-value">
+											<div class="form-group">
+											
+													<span  class="form-control span-input" >{{command.total_ht | number:'0.3-3'}}</span>	
+											</div>
+										</span>
+									</div>
+									<div class="field">
+										<span class="field-label">Montant TVA</span>
+										<span class="field-value">
+											<div class="form-group">
+												
+													<span  class="form-control span-input" >{{command.total_tva | number:'0.3-3'}}</span>			
+											</div>
+										</span>
+									</div>
+								
+									<div class="field grand-total">
+										<span class="field-label">Montant TTC</span>
+										<span class="field-value">
+											<div class="form-group">
+												
+													<span  class="form-control span-input" >{{command.total_ht+command.total_tva | number:'0.3-3'}}</span>	
+											</div>
+										</span>
+									</div><br/>
+									
+								</div>
+							</div>
+						</div>
+
+						<div class="print d-flex" *ngIf="command">
+                        <button class="btn btn-danger" *ngIf="command.statut!='Confirmed' && command.statut!='Canceled'" 
+                        (click)="open(retirerModal)">Rejeter</button>
+							<button mat-raised-button class="btn btn-success" *ngIf="command.statut!='Confirmed' && command.statut!='Canceled'"  type="submit"
+                        (click)="confirmCommand()">Confirmer</button>
+                        <button type="button" class="btn btn-success" *ngIf="command.statut==='Confirmed' && command.statut!='Canceled' && !command.bonreception"  [routerLink]="'/'+category+'/receptions/add-bon'"
+							[queryParams]="{id: command._id}">Créer un bon de reception</button>  
+							<button type="button" class="btn btn-success" *ngIf="command.statut==='Confirmed' && command.statut!='Canceled' && command.bonreception && command.bonreception.length>0"  [routerLink]="'/'+category+'/receptions/voir-bon'"
+							[queryParams]="{id: command.bonreception}">Consulter le bon de reception</button>
+                        
+						</div>
+					</div>
+				</div>
+
+				
+			</div>
+		</div>
+		</div>
+	</div>
+</div>
+
+<!--MODAL RETIRER PRODUCTION-->
+<ng-template #retirerModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Rejet de demande</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form >
+                <div class="form-group">
+                    <label for="note_retirer">Veuillez saisir la raison de rejet :</label><br/>
+                    <textarea rows="4" name="note_retirer" [(ngModel)]="command.note" cols="50"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" mat-raised-button  class="btn btn-outline-secondary"
+                (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button type="button" class="btn btn-danger" (click)="rejectCommand()">Rejeter</button>
+        </div>
+    </div>
+</ng-template>

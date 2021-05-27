@@ -1,0 +1,266 @@
+<div class="receipt-content">
+	<div class="snippet">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="invoice-wrapper" id='facture'>
+					<div class="payment-info">
+						<div class="row">
+							<div class="col-sm-6">
+								<span style='font-size: 18px'>No. Facture:  </span>
+								<span *ngIf="facture">{{facture.numero}}</span>
+							</div>
+							<div class="col-sm-6 text-right">
+								<span style='font-size: 18px'>Date de création :  </span>
+								<span *ngIf="facture">{{facture.createdAt | date:'medium'}}</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="payment-details">
+						<div class="row" *ngIf="facture && !facture.isReception">
+							<div class="col-sm-6" *ngIf="livraisons.client">
+								<p class="livraisons.client-info">
+									<span class="info-label" style='font-size: 18px'>Nom : </span>
+									<span class="info-text" style='font-size: 18px'>{{livraisons.client.name}}</span>
+								</p>
+								<p class="livraisons.client-info">
+									<span class="info-label" style='font-size: 18px'>Adresse : </span>
+									<span class="info-text" style='font-size: 18px'>{{livraisons.client.adresse}}</span>
+								</p>
+								<p class="livraisons.client-info">
+									<span class="info-label" style='font-size: 18px'>Telephone : </span>
+									<span class="info-text" style='font-size: 18px'>{{livraisons.client.tel}}</span>
+								</p>
+							</div>
+							<div class="col-sm-6" *ngIf="livraisons.client">
+								<div class="float-right">
+									<p class="livraisons.client-info">
+										<span class="info-label" style='font-size: 18px'>Matricule Fiscale : </span>
+										<span class="info-text" style='font-size: 18px'>{{livraisons.client.mat_fis}}</span>
+									</p>
+									<p class="livraisons.client-info">
+										<span class="info-label" style='font-size: 18px'>Email : </span>
+										<span class="info-text" style='font-size: 18px'>{{livraisons.client.email}}</span>
+									</p>
+									<p class="livraisons.client-info">
+										<span class="info-label" style='font-size: 18px'>Zone : </span>
+										<span class="info-text" style='font-size: 18px'>{{livraisons.client.zone}}</span>
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="row" *ngIf="facture && facture.isReception">
+							<div class="col-sm-6" *ngIf="fournisseur">
+								<p class="livraisons.client-info">
+									<span class="info-label" style='font-size: 18px'>Nom : </span>
+									<span class="info-text" style='font-size: 18px'>{{fournisseur.name}}</span>
+								</p>
+								<p class="livraisons.client-info">
+									<span class="info-label" style='font-size: 18px'>Adresse : </span>
+									<span class="info-text" style='font-size: 18px'>{{fournisseur.adresse}}</span>
+								</p>
+								<p class="livraisons.client-info">
+									<span class="info-label" style='font-size: 18px'>Telephone : </span>
+									<span class="info-text" style='font-size: 18px'>{{fournisseur.tel}}</span>
+								</p>
+							</div>
+							<div class="col-sm-6" *ngIf="fournisseur">
+								<div class="float-right">
+									<p class="livraisons.client-info">
+										<span class="info-label" style='font-size: 18px'>Matricule Fiscale : </span>
+										<span class="info-text" style='font-size: 18px'>{{fournisseur.mat_fis}}</span>
+									</p>
+									<p class="livraisons.client-info">
+										<span class="info-label" style='font-size: 18px'>Email : </span>
+										<span class="info-text" style='font-size: 18px'>{{fournisseur.email}}</span>
+									</p>
+
+									<div class="livraisons.client-info" *ngIf="statut && (!facture.justif_facture || facture.justif_facture.length==0)">
+										<input #facInput (change)="addFactureFile(facInput,facture._id)" type="file" name="file" id="file" class="inputfile" />
+										<label for="file">Télécharger justificatif facture</label>
+									</div>
+									<div class="livraisons.client-info" *ngIf="facture.justif_facture && facture.justif_facture.length>0 && statut" (click)="voirImage(facture.justif_facture)">
+										
+										<span >Voir justificatif facture</span>
+									</div>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="line-items">
+						<div class="headers clearfix">
+							<div class="row">
+								<div class="table-responsive">
+									<table class="table align-items-center table-flush" *ngIf="facture && !facture.isReception">
+										<thead class="thead-light">
+											<tr>
+                                                <!--'num','livraisons.client','tel','date_livraison','total','tva'-->
+												<th scope="col">N°</th>
+												<th scope="col">livraisons.client</th>
+												<th scope="col">Tel</th>
+												<th scope="col">Date de livraison</th>
+												<th scope="col">Total (hors taxe)</th>
+												<th scope="col">TVA</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let livraison of livraisons;let i=index">
+												<td class="mb-0 text-sm"> {{livraison.num}}</td>
+
+												<td *ngIf="livraisons.client">
+													{{livraisons.client.name}}
+												</td>
+												<td *ngIf="livraisons.client">
+                                                    {{livraisons.client.tel}}
+                                                </td>
+												<td>
+													{{livraison.date_livraison | date}}
+												</td>
+												<td>
+													{{livraison.total_ht | number:'0.3-3'}}
+												</td>
+												<td>
+													{{livraison.total_tva | number:'0.3-3'}}
+												</td>
+											</tr>
+
+										</tbody>
+									</table>
+									<table class="table align-items-center table-flush" *ngIf="facture && facture.isReception">
+										<thead class="thead-light">
+											<tr>
+                                                <!--'num','livraisons.client','tel','date_livraison','total','tva'-->
+												<th scope="col">N°</th>
+												<th scope="col">Fournisseur</th>
+												<th scope="col">Tel</th>
+												<th scope="col">Date de livraison</th>
+												<th scope="col">Total (hors taxe)</th>
+												<th scope="col">TVA</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let reception of receptions;let i=index">
+												<td class="mb-0 text-sm"> {{reception.num}}</td>
+
+												<td *ngIf="fournisseur">
+													{{fournisseur.name}}
+												</td>
+												<td *ngIf="fournisseur">
+                                                    {{fournisseur.tel}}
+                                                </td>
+												<td>
+													{{reception.date_livraison | date}}
+												</td>
+												<td>
+													{{reception.total_ht | number:'0.3-3'}}
+												</td>
+												<td>
+													{{reception.total_tva | number:'0.3-3'}}
+												</td>
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+					
+
+						<div class="row total">
+							<div class="col-sm-8">
+								<p class="extra-notes" *ngIf="statut || otherStatut">
+                                    <span style='font-size: 18px'>Mode de paiement</span>
+                                   
+                                        <select class="form-control" [disabled]="statut" (change)="changerMode($event)" [(ngModel)]="mode" id="exampleFormControlSelect1">
+											<option *ngFor="let value of modes" [value]="value">{{value}}</option>
+                                          </select>
+                                   
+									
+
+								</p>
+							</div>
+							<div class="col-sm-4 text-right" *ngIf="facture">
+								<div class="float-right">
+									<div class="field">
+										<span class="field-label" style='font-size: 18px'>Montant hors taxe</span>
+										<span class="field-value">
+										
+												<span  
+													class="form-control span-input" 
+													>{{facture.ht | number:'0.3-3'}}</span>
+										
+										</span>
+									</div>
+									<div class="field">
+										<span class="field-label" style='font-size: 18px'>Montant TVA</span>
+										<span class="field-value">
+										
+												
+													<span  
+													class="form-control span-input" 
+													>{{facture.tva | number:'0.3-3'}}</span>
+										
+										</span>
+									</div>
+									<div class="field">
+										<span class="field-label" style='font-size: 18px'>Timbre Fiscale</span>
+										<span class="field-value">
+											
+													 <span  
+													class="form-control span-input" 
+													>{{facture.timbre_fiscale | number:'0.3-3'}}</span>
+											
+										</span>
+                                    </div>
+                                    <div class="field" *ngIf="!facture.isReception">
+										<span class="field-label" style='font-size: 18px'>Frais de livraison</span>
+										<span class="field-value">
+											
+												
+													 <span  
+													class="form-control span-input" 
+													>{{facture.frais_livraison | number:'0.3-3'}}</span>
+											
+										</span>
+									</div>
+									<div class="field grand-total">
+										<span class="field-label" style='font-size: 18px'>Montant TTC</span>
+										<span class="field-value">
+									
+													<span  
+													class="form-control span-input"  style='font-size: 18px'
+													>{{facture.ht+facture.tva | number:'0.3-3'}}</span>
+										
+										</span>
+									</div><br/>
+									<div class="field">
+										<span class="field-label">Statut</span> 
+										<span class="field-value">
+											<div class="form-group">
+                                                  <select class="form-control" [disabled]="statut" (change)="changerStatut($event)" [(ngModel)]="statutValue">
+													<option *ngFor="let value of statutValues" [value]="value">{{value}}</option>
+												  </select>
+											</div>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						
+					</div>
+				</div>
+				<div class="print imprime">
+					<a  class="print-button" (click)="printWindow()">
+						<i class="fa fa-print"></i>
+						Imprimer
+					</a>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</div>

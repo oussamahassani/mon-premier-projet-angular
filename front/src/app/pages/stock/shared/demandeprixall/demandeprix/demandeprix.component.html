@@ -1,0 +1,192 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7" id='matiere'>
+<div class="receipt-content" style="background: transparent ;">
+    <button  [disabled]="isEmptyObject(selectedfournisseur)"  mat-raised-button class="btn btn-success"  type="submit"
+                        (click)="imprimerlademade()">Imprimer la demande</button>
+						<!-- Button trigger modal -->
+<!-- Button trigger modal -->
+<button   [disabled]="isEmptyObject(selectedfournisseur)" mat-raised-button class="btn btn-success" (click)="open(sendmail)" >Envoyer</button>
+
+  
+  <!-- Modal -->
+   <!--MODAL send mail-->
+   <ng-template #sendmail let-modal>
+    <div class="modal-content" >
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Envoyer  email</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <textarea rows="4"  [(ngModel)]="emailcontenu" cols="50"></textarea>
+          </div>
+		  <p (click)="openPDF()" class="ml-7"> Attachement :  <img src="../../../../../../assets/img/pdfpng.png" width="30px" alt="attch file"></p>
+          <div class="modal-footer">
+           
+            <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+            <button  (click)="importer();modal.dismiss('cancel click')" type="button" class="btn btn-primary" >Envoiyer email</button>
+          </div>
+    </div>
+  </ng-template>
+
+ 
+
+	<div class="snippet">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="invoice-wrapper" id="idpdf">
+					<div class="payment-info">
+						<div class="row">
+							<div class="col-sm-6">
+								<strong *ngIf="numerocommande">N° Commande: {{numerocommande}}</strong>
+							</div>
+							<div class="col-sm-6 text-right" >
+								<span>Date demande</span>
+								<strong >{{now | date:'medium'}}</strong><br>
+								<span>Date reception prevue :    </span>
+								<strong  *ngIf="!changedat" (click)="changedate($event)" >{{numberdate}}  jours</strong>
+								<input  *ngIf="changedat" (change)="keyPress($event)" (blur)="changedate($event); " type="text" placeholder="nombre de jour"> 
+								<br> <strong  *ngIf="Modaliter" (click)="changemodaliter($event)" >Modaliter de payement :  {{valuemodaliter}} jours</strong>
+								<span *ngIf="!Modaliter">Modaliter de payement <input (blur)="changemodaliter();" (change)="onchangemodaliter($event)"  type="text" placeholder="nombre de jour"> </span>
+							</div>
+						</div>
+					</div>
+
+					<div class="payment-details">
+                        <div class="form-group col-sm-4" *ngIf="categorie=='stock'">
+						<span>choisire matiere</span>
+                            <select class="form-control" [(ngModel)]="selected" (change)="notifyChange($event)">
+								<ng-container *ngFor="let matiere of matieres">
+									<option  [value]="matiere._id">{{matiere.reference}}</option>
+
+							</ng-container>
+                            </select>
+                        </div>
+						<div class="form-group col-sm-4" *ngIf="categorie=='service'">
+							<span>choisire nom service</span>
+								<select class="form-control" [(ngModel)]="selected" (change)="notifyChange($event)">
+									<ng-container *ngFor="let matiere of matieres">
+										<option  [value]="matiere._id">{{matiere.name}}</option>
+								
+								</ng-container>
+								</select>
+							</div>
+						
+					</div>
+
+					<div class="line-items">
+						<div class="headers clearfix">
+							<div class="row">
+								<div class="table-responsive">
+									<table class="table align-items-center table-flush" style="height: 250px;">
+										<thead class="thead-light">
+											<tr>
+												<th scope="col" width="10%">Reference</th>
+												<th scope="col" width="20%">Nom</th>
+												<th scope="col" width="15%">Quantité Demandée</th>
+												<!-- <th scope="col" width="15%">Prix Demandée</th> -->
+                                                <th scope="col"width="15%">Nom Fournisseur</th>
+												<th scope="col"width="15%">prix HT Fournisseur(piece)</th>
+												<th scope="col" width="10%">TVA</th>
+											</tr>
+										</thead>
+										<tbody>
+											<ng-container>
+											<tr *ngFor="let fournisseur of selectedfournisseur.fournisseurs;let i=index">
+                                            
+
+												<td class="mb-0 text-sm"><span *ngIf="categorie=='stock'">{{selectedfournisseur.reference}}  </span>  <span *ngIf="categorie=='service'">{{selectedfournisseur.num}}  </span></td>
+
+												<td>
+													<span *ngIf="categorie=='stock'">{{selectedfournisseur.reference}}  </span>	 <span *ngIf="categorie=='service'">{{selectedfournisseur.name}}</span>
+												</td>
+												<td>
+													<input (change)="calculeprix()" [(ngModel)]="quantiterdemander" style="background-color: transparent; border:none ;"  matInput placeholder="Quantiter demander" type="text" >
+												</td>
+												<!-- <td><input (change)="calculeprix()" [(ngModel)]="prixproposer" style="background-color: transparent; border:none ;"  matInput placeholder="Prix Proposer" type="text" > </td> -->
+												<td>
+													{{fournisseur.fournisseur.name }}
+												</td>
+                                                 <td>
+													 {{fournisseur.prix_ht }}
+												 </td>
+												<td>
+													{{selectedfournisseur.tva}}%
+                                                </td>
+                                                
+											</tr>
+                                            </ng-container> 
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+
+
+						<div class="total text-right">
+
+							<div>
+
+							</div>
+						</div>
+
+						<!-- <div class="row total">
+							<div class="col-sm-8">
+                                   
+							</div>
+							<div class="col-sm-4 text-right">
+								<div class="float-right">
+									<div class="field">
+										<span class="field-label">Montant hors taxe</span>
+										<span class="field-value">
+											<div class="form-group">
+											
+													<span  class="form-control span-input" >{{montant_ht_proposer}}</span>	
+											</div>
+										</span>
+									</div>
+									<div class="field">
+										<span class="field-label">Montant TVA</span>
+										<span class="field-value">
+											<div class="form-group">
+												
+													<span  class="form-control span-input" >{{montant_tva_proposer}}</span>			
+											</div>
+										</span>
+									</div>
+								
+									<div class="field grand-total">
+										<span class="field-label">Montant TTC</span>
+										<span class="field-value">
+											<div class="form-group">
+												
+													<span  class="form-control span-input" >{{montant_tva_proposer +montant_ht_proposer }}</span>	
+											</div>
+										</span>
+									</div><br/>
+									
+								</div>
+							</div>
+						</div> -->
+
+						<div class="print">
+							<button [ngClass]="{ 'btn-danger': isEmptyObject(selectedfournisseur) , 'btn-success': !isEmptyObject(selectedfournisseur) }" mat-raised-button class="btn btn-success"  type="submit"
+                        (click)="submitdemande()"  [disabled]="isEmptyObject(selectedfournisseur)">Ajouter demande prix</button>
+						</div>
+					</div>
+				</div>
+
+				
+			</div>
+		</div>
+	</div>
+	</div>
+</div>

@@ -1,0 +1,233 @@
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+  style="min-height: 200px;  background-size: cover; background-position: center top;">
+  <!-- Mask -->
+  <span class="mask bg-gradient-danger opacity-8"></span>
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+    <div class="row">
+      <div class="col-lg-7 col-md-10">
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-12 order-xl-1">
+      <div class="card bg-secondary shadow">
+        <div class="card-header bg-white border-0">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">Ajouter Commande</h3>
+            </div>
+            <div class="col-4 text-right">
+              <!-- <a href="#!" class="btn btn-sm btn-primary"></a>-->
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form>
+            <h6 class="heading-small text-muted mb-4">Client informations</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label for="exampleFormControlSelect1">Client</label>
+                    <select class="form-control" id="exampleFormControlSelect1"
+                      (change)="selectClient($event.target.value)" [(ngModel)]="theSelect" [ngModelOptions]="{standalone: true}">
+                      <option *ngFor="let client of clients" [value]="client._id">{{client.name}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-adresse">Adresse</label>
+                    <input type="text" disabled value="{{selectedClient?.adresse}}" id="input-adresse"
+                      class="form-control form-control-alternative" placeholder="Adresse">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-zone">Zone</label>
+                    <input type="text" id="input-zone" disabled value="{{selectedClient?.zone}}"
+                      class="form-control form-control-alternative" placeholder="Zone">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-phone">Telephone</label>
+                    <input type="text" id="input-phone" disabled value="{{selectedClient?.tel}}"
+                      class="form-control form-control-alternative" placeholder="N° telephone">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr class="my-4" />
+            <!-- Address -->
+            <h6 class="heading-small text-muted mb-4">Add products</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-12">
+                  <form [formGroup]="productTable">
+                    <table class="table mat-elevation-z8 align-items-center table-flush">
+                      <thead>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Quantité</th>
+                        <th>Stock</th>
+                        <th>Prix</th>
+                        <th>TVA</th>
+                        <th>Promo</th>
+                        <th>Remise</th>
+                      </thead>
+                      <tbody>
+                        <ng-container formArrayName="tableRows"
+                          *ngFor="let group of getFormControls.controls ; let i=index">
+                          <tr *ngIf="group.get('isEditable').value" [formGroupName]="i">
+                            <td>
+                              <div class="form-group">
+                                  <mat-form-field style="max-width: 100px;">
+                                    <mat-select  [formControl]="product" [disabled]="!selectedClient"  placeholder="Code search" (selectionChange)="selectProduct($event,i);doneRow(group);addRow()">
+                                      <mat-option>
+                                        <ngx-mat-select-search [formControl]="searchCodeCtrl" placeholderLabel="Rechercher..." 
+                                        noEntriesFoundLabel="Aucun produit trouvé"></ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option *ngFor="let product of filteredProducts" [value]="product">
+                                        {{product.code}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>  
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <mat-form-field>
+                                  <mat-select  [formControl]="product" [disabled]="!selectedClient"  placeholder="Product search" (selectionChange)="selectProduct($event,i);doneRow(group);addRow()" #singleSelect>
+                                    <mat-option>
+                                      <ngx-mat-select-search [formControl]="searchProductCtrl" placeholderLabel="Rechercher..." 
+                                      noEntriesFoundLabel="Aucun produit trouvé"></ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let product of filteredProducts" [value]="product">
+                                      {{product.name}}
+                                    </mat-option>
+                                  </mat-select>
+                                </mat-form-field>
+                                
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="number" formControlName="qte" (change)="changeQuantite(i)" class="form-control"
+                                  placeholder=""  />
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="number" onkeypress="return event.charCode >= 48" min="1" formControlName="stock" class="form-control"
+                                  placeholder=""  />
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="number" onkeypress="return event.charCode >= 48" min="1" formControlName="prix" class="form-control"
+                                  placeholder=""  />
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="number" onkeypress="return event.charCode >= 48" min="1" formControlName="tva" class="form-control"
+                                  placeholder=""  />
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="number" onkeypress="return event.charCode >= 48" min="1" formControlName="promo" class="form-control"
+                                  placeholder=""  />
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group">
+                                <input type="number" onkeypress="return event.charCode >= 48" min="1" formControlName="remise" class="form-control"
+                                  placeholder=""  />
+                              </div>
+                            </td>
+                           
+                          </tr>
+                          <tr *ngIf="!group.get('isEditable').value" [formGroupName]="i">
+                            <td>
+                              {{group.get('code').value}}
+                            </td>
+                            <td>
+                              {{group.get('name').value}}
+                            </td>
+                            <td>
+                              <input type="number" onkeypress="return event.charCode >= 48" min="1" formControlName="qte" (change)="changeQuantite(i)" class="form-control"
+                              placeholder=""  />
+                            </td>
+                            <td>
+                              {{group.get('stock').value}}
+                            </td>
+                            <td>
+                              {{group.get('prix').value}}
+                            </td>
+                            <td>
+                              {{group.get('tva').value}}
+                            </td>
+                            <td>
+                              {{group.get('promo').value}}
+                            </td>
+                            <td>
+                              {{group.get('remise').value}}
+                            </td>
+                            <td>
+                              <mat-icon class="edit" (click)="editRow(group)">edit</mat-icon>
+                              <mat-icon class="delete" (click)="deleteRow(i)">delete_forever</mat-icon>
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                    
+                   
+                      <hr class="my-4" />
+                      <!-- Description -->
+                      <h6 class="heading-small text-muted mb-4">Command</h6>
+                      <div class="pl-lg-4">
+                        <div class="form-group">
+                          <label for="c_ht">Prix HT</label>
+                         <input name="c_ht" placeholder="0" disabled [(ngModel)]="prix_ht" [ngModelOptions]="{standalone: true}" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                          <label for="c_tva">Montant TVA</label>
+                         <input name="c_tva" placeholder="0" disabled [(ngModel)]="tva" [ngModelOptions]="{standalone: true}" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                          <label for="c_ttc">Prix TTC</label>
+                          <input name="c_ttc" placeholder="0" disabled [(ngModel)]="prix_ttc" [ngModelOptions]="{standalone: true}" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                          <mat-form-field>
+                            <mat-label>Date de livraison</mat-label>
+                            <input matInput [matDatepicker]="picker3" [min]="minDate" [formControl]="date_livraison" [value]="date_livraison.value">
+                            <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                            <mat-datepicker #picker3></mat-datepicker>
+                          </mat-form-field>
+                        </div>
+                      </div>
+                      <button mat-raised-button  type="submit"
+                        (click)="submitCommand()">Submit</button>
+                      
+                  </form>
+                </div>
+              </div>
+
+            </div>
+            
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

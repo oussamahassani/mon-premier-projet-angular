@@ -1,0 +1,158 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+            <mat-slide-toggle   color="primary" on-change="toggledtype()" > {{valeurtypedemande}}  </mat-slide-toggle>
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header border-0 disp-flex">
+                    <div class="mb-0">
+                        <h3>demande d'offre de prix</h3>
+                 
+                            <mat-select class="mt-4 col-md-4 bg-showall" [(ngModel)]="selectedValue" >
+
+                                <mat-option value="0" class="filtre-text" (click)="getType(1)">Tous</mat-option>
+                                <mat-option value="1" class="filtre-text" (click)="getType(3)">Terminer</mat-option>
+                                <mat-option value="3" class="filtre-text" (click)="getType(2)">En cours</mat-option>
+                            </mat-select>
+                       
+                    </div>
+                    <div class="mb-0" style="display:grid">
+
+               
+                        <form
+                            class="navbar-search navbar-search-light form-inline mr-3 d-none d-md-flex ml-lg-auto mt-3">
+                            <div class="form-group mb-0" >
+                                <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    </div>
+                                  
+                                    <input class="form-control" placeholder="Rechercher" type="text" #input (change)="rechrche($event)">
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+                </div>
+                <div class="product">
+                    <div *ngIf="isLoading" 
+                    style="display: flex; justify-content: center; align-items: center; background: white;">
+                   <mat-progress-spinner 
+                     color="primary" 
+                     mode="indeterminate">
+                   </mat-progress-spinner>
+                </div>
+                    <table  mat-table [dataSource]="datasour" matSort
+                        class="table  mat-elevation-z8 align-items-center table-flush">
+                        <!-- Demande number Column -->
+                        <ng-container matColumnDef="num">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>N°.Demandes</th>
+                            <td mat-cell *matCellDef="let element"> {{element.num}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="asked_quantite">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Quantite demander</th>
+                            <td mat-cell *matCellDef="let element"> {{element.asked_quantite}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="matiere" *ngIf="valeurtypedemande=='stock'">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Matiere</th>
+                            <td mat-cell *matCellDef="let element"> {{element.matiere.designation}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="matiere" *ngIf="valeurtypedemande=='service'">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>services</th>
+                            <td mat-cell *matCellDef="let element"> {{element.service.name}} </td>
+                        </ng-container>
+                        <!-- User name Column -->
+                        <ng-container matColumnDef="creatorId">
+                            <th mat-header-cell *matHeaderCellDef>Employée</th>
+                            <td mat-cell *matCellDef="let element"> {{element.creatorId.fname}} {{element.creatorId.lname}} </td>
+                        </ng-container>
+                    
+                        <!-- Created at Column -->
+                        <ng-container matColumnDef="createdAt">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Date de création </th>
+                            <td mat-cell *matCellDef="let element">{{element.createdAt | date}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="datelicraison_prevu">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Date de livraison prevu </th>
+                            <td mat-cell *matCellDef="let element">{{element.datelicraison_prevu | date}} </td>
+                        </ng-container>
+                        <!--Statut-->
+                        <ng-container matColumnDef="statut">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span   class="badge-pile"> {{element.statut}}</span>
+                            </td>
+                        </ng-container>
+                        
+                       
+                        
+                        <!-- Action Column -->
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef> Action </th>
+                            <td mat-cell *matCellDef="let element">
+                                <div ngbDropdown placement="bottom-right">
+                                    <button class="btn btn-sm btn-icon-only text-light" ngbDropdownToggle>
+                                        <i class="ni ni-active-40 text-blue font-icon"></i>
+                                    </button>
+                                    <div ngbDropdownMenu class="dropdown-menu-right dropdown-menu-arrow">
+                                        <button  class="dropdown-item" routerLink="detail-demande"
+                                            [queryParams]="{id: element._id ,service:valeurtypedemande}">Consulter Devis</button>
+                                            <button class="dropdown-item" (click)="imprimerlademade(element)">  Telecharger Devis</button>
+                                            <button class="dropdown-item" (click)="open(sendmail,element)"> Envoyer email</button>
+
+                                    </div>
+                                 
+                                   
+                                </div>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index;"></tr>
+                    </table>
+
+
+                </div>
+                <div class="card-footer py-4">
+                    <mat-paginator [pageSizeOptions]="[5,10]" showFirstLastButtons></mat-paginator>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<ng-template #sendmail let-modal>
+    <div class="modal-content" >
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Envoyer  email</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <textarea rows="4"  [(ngModel)]="emailcontenu" cols="50"></textarea>
+          </div>
+		  <p (click)="openPDF()" class="ml-7"> Attachement :  <img src="../../../../../../assets/img/pdfpng.png" width="15%" alt="attch file"></p>
+          <div class="modal-footer">
+           
+            <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+            <button  (click)="postemail();modal.dismiss('cancel click')" type="button" class="btn btn-primary" >Envoiyer email</button>
+          </div>
+    </div>
+  </ng-template>
+
+
+
+
+  
+  
+

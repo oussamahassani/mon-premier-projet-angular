@@ -1,0 +1,21 @@
+.ml-10{
+margin-left: 10px;
+margin-top: 29px;
+}
+
+
+::ng-deep.modal-dialog {
+  max-width: 80%;
+  margin: 1.75rem auto;
+}
+.fade.in {
+  opacity: 1;
+}
+.modal.in .modal-dialog {
+  -webkit-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+.modal-backdrop.in {
+  opacity: 0.5;
+}

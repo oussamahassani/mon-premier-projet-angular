@@ -1,0 +1,200 @@
+<div class="receipt-content">
+	<div class="snippet">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="invoice-wrapper">
+					<div class="payment-info">
+						<div class="row">
+							<div class="col-sm-6">
+								<span>No. Facture</span>
+								<strong>{{name}}</strong>
+							</div>
+							<div class="col-sm-6 text-right">
+								<span>Date de création</span>
+								<strong>{{now | date:'medium'}}</strong>
+							</div>
+						</div>
+					</div>
+
+					<div class="payment-details">
+						<div class="row">
+							<div class="col-sm-6" *ngIf="client">
+								<p class="client-info">
+									<span class="info-label">Nom : </span>
+									<span class="info-text">{{client.name}}</span>
+								</p>
+								<p class="client-info">
+									<span class="info-label">Adresse : </span>
+									<span class="info-text">{{client.adresse}}</span>
+								</p>
+								<p class="client-info">
+									<span class="info-label">Telephone : </span>
+									<span class="info-text">{{client.tel}}</span>
+								</p>
+							</div>
+							<div class="col-sm-6" *ngIf="client">
+								<div class="float-right">
+									<p class="client-info">
+										<span class="info-label">Matricule Fiscale : </span>
+										<span class="info-text">{{client.mat_fis}}</span>
+									</p>
+									<p class="client-info">
+										<span class="info-label">Email : </span>
+										<span class="info-text">{{client.email}}</span>
+									</p>
+									<p class="client-info">
+										<span class="info-label">Zone : </span>
+										<span class="info-text">{{client.zone}}</span>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="line-items">
+						<div class="headers clearfix">
+							<div class="row">
+								<div class="table-responsive">
+									<table class="table align-items-center table-flush">
+										<thead class="thead-light">
+											<tr>
+                                                <!--'num','client','tel','date_livraison','total','tva'-->
+												<th scope="col">N°</th>
+												<th scope="col">Client</th>
+												<th scope="col">Tel</th>
+												<th scope="col">Date de livraison</th>
+												<th scope="col">Total (hors taxe)</th>
+												<th scope="col">TVA</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let livraison of livraisons;let i=index">
+												<td class="mb-0 text-sm"> {{livraison.num}}</td>
+
+												<td *ngIf="client">
+													{{client.name}}
+												</td>
+												<td *ngIf="client">
+                                                    {{client.tel}}
+                                                </td>
+												<td>
+													{{livraison.date_livraison | date}}
+												</td>
+												<td>
+													{{livraison.total-livraison.tva | number:'0.3-3'}}
+												</td>
+												<td>
+													{{livraison.tva | number:'0.3-3'}}
+												</td>
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+						<div class="total text-right">
+
+							<div>
+
+							</div>
+						</div>
+
+						<div class="row total">
+							<div class="col-sm-6">
+								<p class="extra-notes" *ngIf="statut">
+                                    <strong>Mode de paiement</strong>
+                                   
+                                        <select class="form-control" (change)="changerMode($event)" [(ngModel)]="mode" id="exampleFormControlSelect1">
+											<option *ngFor="let value of modes" [value]="value">{{value}}</option>
+                                          </select>
+                                   
+									
+
+								</p>
+							</div>
+							<div class="col-sm-6 text-right">
+								<div class="float-right">
+									<div class="field">
+										<span class="field-label">Montant hors taxe</span>
+										<span class="field-value">
+											<div class="form-group">
+												<span  
+													class="form-control span-input" 
+													>{{total-totalTva | number:'0.3-3'}}</span>
+											</div>
+										</span>
+									</div>
+									<div class="field">
+										<span class="field-label">Montant TVA</span>
+										<span class="field-value">
+											<div class="form-group">
+												
+													<span  
+													class="form-control span-input" 
+													>{{totalTva | number:'0.3-3'}}</span>
+											</div>
+										</span>
+									</div>
+									<div class="field">
+										<span class="field-label">Timbre Fiscale</span>
+										<span class="field-value">
+											<div class="form-group">
+												<input type="number" onkeypress="return event.charCode >= 48" min="1" [(ngModel)]="timbre" class="form-control"
+													 placeholder="0.00 DT">
+													 
+											</div>
+										</span>
+                                    </div>
+                                    <div class="field">
+										<span class="field-label">Frais de livraison</span>
+										<span class="field-value">
+											<div class="form-group">
+												
+													 <span  
+													class="form-control span-input" 
+													>{{frais | number:'0.3-3'}}</span>
+											</div>
+										</span>
+									</div>
+									<div class="field grand-total">
+										<span class="field-label">Montant TTC</span>
+										<span class="field-value">
+											<div class="form-group">
+													<span  
+													class="form-control span-input" 
+													>{{total | number:'0.3-3'}}</span>
+											</div>
+										</span>
+									</div><br/>
+									<div class="field">
+										<span class="field-label">Statut</span> 
+										<span class="field-value">
+											<div class="form-group">
+												<select class="form-control" (change)="changerStatut($event)" id="exampleFormControlSelect1">
+                                                    <option value="nopayed">Non Payée</option>
+                                                    <option value="payed">Payée</option>
+												  </select>
+											</div>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="print">
+							<button class="btn btn-success" (click)="submitFacture()">Sauvegarder</button><br/>
+							<a  class="print-button" (click)="printWindow()">
+								<i class="fa fa-print"></i>
+								Imprimer
+							</a>
+						</div>
+					</div>
+				</div>
+
+				
+			</div>
+		</div>
+	</div>
+</div>

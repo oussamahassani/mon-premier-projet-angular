@@ -1,0 +1,208 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+    <div>
+        <h4 class="modal-title" id="modal-basic-title">devis liste</h4>
+   
+          <span aria-hidden="true">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <div class="input-group">
+              <table class="table align-items-center table-flush">
+                  <thead class="thead-light">
+                      <tr>
+                          <th scope="col">Logo fournissuer</th>
+                          <th scope="col">Nom fournisseur</th>
+                          <th scope="col">Prix envoyer</th>
+                          <th scope="col">Delais de livraison</th>
+                          <th scope="col">Modaliter de payement</th>
+                          <th scope="col">Devis</th>
+                      </tr>
+                  </thead>
+                  <tbody *ngIf="fournissuers">
+                      <tr *ngFor="let fourn  of fournissuers ; let index = index ">
+                          <td class="mb-0 text-sm">  <img src="{{previewURL}}{{fourn.fournisseur.logo}}" class="rounded-circle" width="20%"></td>
+                          <td class="mb-0 text-sm"> {{fourn.fournisseur.name}}</td>
+                          <td class="mb-0 text-sm"><input *ngIf="fourn.devis_envoiyer==undefined"  [ngModelOptions]="{standalone: true}" (change)="changeprixdemande(index, $event)" [(ngModel)]="fourn.prix_evoiyer" style="background-color: transparent; border:none ;"  matInput placeholder="Quantiter demander" type="text" >
+                        <span *ngIf="fourn.devis_envoiyer!==undefined">{{fourn.prix_evoiyer}}</span>
+                        </td>
+                          <td class="mb-0 text-sm"><input  *ngIf="fourn.devis_envoiyer==undefined" [ngModelOptions]="{standalone: true}" (change)="changedemailslivraison(index, $event)" [(ngModel)]="fourn.delais_de_livraison" style="background-color: transparent; border:none ;"  matInput placeholder="Delais de livraison (J)" type="number" > 
+                            <span *ngIf="fourn.devis_envoiyer!==undefined">{{fourn.delais_de_livraison}}</span>
+                        </td>
+                          <td class="mb-0 text-sm"><input *ngIf="fourn.devis_envoiyer==undefined" [ngModelOptions]="{standalone: true}" (change)="changemodaliterpayement(index, $event)" [(ngModel)]="fourn.modaliter_de_payement" style="background-color: transparent; border:none ;"  matInput placeholder="Modaliter de payement" type="number" > 
+                            <span *ngIf="fourn.devis_envoiyer!==undefined">{{fourn.modaliter_de_payement}}</span>
+                        </td>
+                          <td *ngIf="fourn.devis_envoiyer == undefined">    <input #imageInput placeholder="devis " accept="image/*" lang="fr"
+                              (change)="addImage(index, imageInput)"  type="file"   ></td>
+                          <td  *ngIf="fourn.devis_envoiyer!==undefined"><a href="{{previewURL}}/uploads/devis/{{fourn.devis_envoiyer}}"><img src="{{previewURL}}/uploads/devis/{{fourn.devis_envoiyer}}" class="rounded-circle" width="40%"></a>  </td>
+                          </tr>
+                          </tbody>
+                          </table>
+        
+            
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer d-flex justify-content-between">
+        <div class="col-sm-5">
+            <span class="field-label">Statut</span> 
+            <span class="field-value">
+                <div class="form-group" *ngIf="statut !== 'terminer'">
+                    <select class="form-control"  (change)="changerStatut($event)" [(ngModel)]="statut">
+                        <option  [value]="'en cours'">en cours</option>
+                        <option  [value]="'terminer'">    terminer</option>
+                      </select>
+                </div>
+                <span *ngIf="statut == 'terminer'" class="ml-2 ">terminer </span>
+            </span>
+        </div>
+        <button type="button" class="btn btn-outline-dark" (click)="senddevis()">Enregistrer</button>
+      </div>
+
+      
+    
+
+    <div class="row total">
+        <div class="col-sm-6"  *ngIf="demand.note !==undefined">
+            <p class="extra-notes">
+                <strong>Notes extra</strong>
+                <textarea rows="4" disabled [(ngModel)]="note" cols="50"></textarea>
+
+
+            </p>
+        </div>
+        <div class="col-sm-6 text-right">
+
+            <span >Crée par : {{demand.creatorId.fname}} {{demand.creatorId.lname}}</span><br/>
+        </div>
+        </div>
+<!-- <div class="receipt-content" style="background: transparent">
+    <div class="snippet">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="invoice-wrapper">
+                    <div class="payment-info">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>No. Demande</span>
+                                <strong *ngIf="demand">{{demand.num}}</strong>
+
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <span>Date de création</span>
+                                <strong *ngIf="demand">{{demand.createdAt | date:'medium'}}</strong>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="line-items">
+                        <div class="headers clearfix">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table align-items-center table-flush">
+                                        <thead class="thead-light">
+                                            <tr>
+                                             
+                                                <th scope="col">Reference</th>
+                                                <th scope="col">Nom</th>
+                                                <th scope="col">Stock</th>
+                                                <th scope="col">Stock min</th>
+                                                <th scope="col">Stock max</th>
+                                                <th scope="col">Prix (hors taxe)</th>
+                                                <th scope="col">TVA (%)</th>
+                                                <th scope="col">Quantite demander</th>
+                                                <th scope="col">Ajouter devis</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngIf="matieres">
+                                            <tr>
+                                                <td class="mb-0 text-sm"> {{matieres.reference}}</td>
+
+                                                <td>
+                                                    {{matieres.designation}}
+                                                </td>
+                                                <td>
+                                                    {{matieres.stock}}
+                                                </td>
+                                                <td>
+                                                    {{matieres.stock_securite}}
+                                                </td>
+                                                <td>
+                                                    {{matieres.stock_max}}
+                                                </td>
+                                                <td>
+                                                    {{matieres.prix_achat | number:'0.3-3'}}
+                                                </td>
+                                                <td>
+                                                    {{matieres.tva}} %
+                                                </td>
+                                                <td>
+                                                    {{demand.asked_quantite}}
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-lg btn-outline-primary" (click)="open(content)">Ajouter devis</button>
+                                                  
+                                                
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <span class="field-label">Statut</span> 
+                            <span class="field-value">
+                                <div class="form-group">
+                                    <select class="form-control"  (change)="changerStatut($event)" [(ngModel)]="statut">
+                                        <option  [value]="'en cours'">en cours</option>
+                                        <option  [value]="'terminer'">terminer</option>
+                                      </select>
+                                </div>
+                            </span>
+                        </div>
+
+                        <div class="row total">
+                            <div class="col-sm-6"  *ngIf="demand.note !==undefined">
+                                <p class="extra-notes">
+                                    <strong>Notes extra</strong>
+                                    <textarea rows="4" disabled [(ngModel)]="demand.note" cols="50"></textarea>
+
+
+                                </p>
+                            </div>
+                            <div class="col-sm-6 text-right">
+
+                                <span >Crée par : {{demand.creatorId.fname}} {{demand.creatorId.lname}}</span><br/>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div> -->
+</div>
+
+
+  
+
+  
+
+
+

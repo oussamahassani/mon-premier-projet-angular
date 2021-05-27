@@ -1,0 +1,144 @@
+
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+style="min-height: 200px; background-size: cover; background-position: center top;">
+<!-- Mask -->
+<span class="mask bg-gradient-danger opacity-8"></span>
+<!-- Header container -->
+
+</div>
+<div class="container-fluid mt--7">
+<div class="row">
+  <div class="col-xl-3 order-xl-2 mb-5 mb-xl-0">
+    <div class="card card-profile shadow">
+      <div class="row justify-content-center">
+        <div class="col-lg-3 order-lg-2">
+
+          <div class="card-profile-image">
+            <a>
+              <img src="{{previewURL}}" class="rounded-circle">
+            </a>
+
+          </div>
+        </div>
+      </div>
+      <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+        <div class="d-flex justify-content-between">
+
+
+        </div>
+      </div>
+      <div class="card-body pt-0 pt-md-4">
+        <div class="row">
+          <div class="col">
+            <div class="card-profile-stats d-flex justify-content-center mt-md-5">
+                <div class="custom-file">
+                  <input #imageInput placeholder="Logo Matière" accept="image/*" lang="fr"
+                    (change)="addImage(imageInput)" type="file" class="custom-file-input" id="customFile">
+                  <label class="custom-file-label" for="customFile">
+                    Choisir le fichier</label>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-9 order-xl-1">
+    <div class="card bg-secondary shadow">
+      <div class="card-header bg-white border-0">
+        <div class="row align-items-center">
+          <div class="col-8">
+            <h3 class="mb-0">Modifier services</h3>
+          </div>
+          <div class="col-4 text-right">
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="formservice">
+          <!-- Description -->
+          <h6 class="heading-small text-muted mb-4">Informations services</h6>
+          <div class="pl-lg-4 row">
+       
+              <div class="form-group col-6">
+                <label for="reference">Reference<span class="champs-obligatoire">*</span></label>
+                <input type="text" formControlName="num" name="num" class="form-control"
+                  placeholder="Saisir la référence*" value=""
+                  [ngClass]="{ 'is-invalid': ft.num.errors && ft.num.touched }" />
+                <div *ngIf="ft.num.errors && ft.num.touched" class="invalid-feedback">
+                  <div *ngIf="ft.num.errors.required">Reference requise</div>
+                </div>
+              </div>
+              <div class="form-group col-6">
+                <label for="name">Nom<span class="champs-obligatoire">*</span></label>
+                <input type="text" formControlName="name" name="name" class="form-control"
+                  placeholder="Saisir Nom de service*" value=""
+                  [ngClass]="{ 'is-invalid': ft.name.errors && ft.name.touched }" />
+                <div *ngIf="ft.name.errors && ft.name.touched" class="invalid-feedback">
+                  <div *ngIf="ft.name.errors.required">Le Nom est requise</div>
+                </div>
+              </div>
+          </div>
+          <hr class="my-4" />
+          <h6 class="heading-small text-muted mb-2">Gestion de service</h6>
+          <div class="pl-lg-4 row">      
+            <div class="form-group col-6">
+              <label for="total">Prix estimee<span class="champs-obligatoire">*</span></label>
+              <input type="number"  min="1"  formControlName="total" name="total" class="form-control"
+                placeholder="Saisir le prix d'achat" value=""
+                [ngClass]="{ 'is-invalid': ft.total.errors && ft.total.touched }"  />
+               <div *ngIf="ft.total.errors && ft.total.touched" class="invalid-feedback">
+                  <div *ngIf="ft.total.errors.required">Prix de reference requis</div>
+                  <div *ngIf="ft.total.errors.min">Le prix de reference doit être supérieur a 0</div> 
+                </div>
+            </div>
+            <div class="form-group col-6">
+              <label for="tva">TVA en % <span class="champs-obligatoire">*</span></label>
+              <input type="number" onkeypress="return event.charCode >= 48" min="1" formControlName="tva" class="form-control" placeholder="Saisir le taux de TVA"
+                [ngClass]="{ 'is-invalid': ft.tva.errors && ft.tva.touched }" />
+              <div *ngIf="ft.tva.errors && ft.tva.touched" class="invalid-feedback">
+                <div *ngIf="ft.tva.errors.required">Le taux TVA est requis</div>
+              </div>
+            </div>
+          </div>
+            
+              <div class=" col-md-8 d-flex align-items-center">
+
+                  <p  style="width:100%">Liste fournisseur <span class="champs-obligatoire">*</span></p>
+                  <mat-select  placeholder="fournisseur" formControlName="fournisseur">
+                      <mat-option  *ngFor="let fournisseur of listefournissuer" [value]="fournisseur._id">{{fournisseur.name}}</mat-option>
+                    </mat-select>
+
+<span class="material-icons" (click)="ajouterFournissuer()">
+                 add_circle_outline
+                 </span>
+               </div>
+               <div class="col-sm-4">
+                  <p  *ngFor="let one of fournissuersname">{{one.name}}
+                   
+                    <span class="material-icons deletepostes"  (click)="deleteservice(one)">
+                      clear
+                      </span>
+                     
+                     
+                      </p><br>
+                  
+                 </div>
+           
+                 <div class="form-group col-6">
+                  <label for="norme">Note</label>
+                  <textarea type="text" formControlName="note" name="note" rows="3" class="form-control"
+                    placeholder="Saisir un note" value=""
+                    [ngClass]="{ 'is-invalid':ft.note.errors && ft.note.touched }"></textarea>
+                </div>
+          <div class="text-center mt-5">
+              <button (click)="updateservice()" class="btn-danger" type="submit" class="btn pull-right"
+                [disabled]="formservice.invalid">Modifier Services</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

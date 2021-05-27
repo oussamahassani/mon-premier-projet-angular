@@ -1,0 +1,193 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+  
+        </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header border-0 disp-flex">
+                    <div class="mb-0">
+                        <h3>Gestion Commandes</h3>
+                        <p>{{commandesLength}} Commandes</p>
+                    </div>
+                    <div class="mb-0" style="display:grid">
+                        <a routerLink="/commandes/ajouter-commande" class="btn btn-sm btn-primary">Ajouter Commande</a>
+                        <form
+                            class="navbar-search navbar-search-light form-inline mr-3 d-none d-md-flex ml-lg-auto mt-3">
+                            <div class="form-group mb-0" [ngClass]="{ 'focused': focus === true }">
+                                <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    </div>
+                                    <!--(keyup)="doFilter($event.target.value)" (blur)="focus = false" (focus)="focus = true"-->
+                                   <input class="form-control" placeholder="Rechercher" type="text" 
+                                          #input>
+                                </div>
+                            </div>
+                        </form>
+  
+                    </div>
+  
+                </div>
+                <div class="product">
+                    <mat-card *ngIf="dataSource.loading$ | async" style="display: flex; justify-content: center; align-items: center;">
+                        <mat-progress-spinner diameter="40" 
+                          mode="indeterminate">
+                        </mat-progress-spinner>
+                      </mat-card>
+                    
+                    <table mat-table [dataSource]="dataSource" matSort class="table  mat-elevation-z8 align-items-center table-flush">
+                        <!-- Command name Column -->
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Commands N° </th>
+                            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                        </ng-container>
+                        <!-- Client name Column -->
+                        <ng-container matColumnDef="client">
+                            <th mat-header-cell *matHeaderCellDef>Client</th>
+                            <td mat-cell *matCellDef="let element"> {{getClientName(element.client)}} </td>
+                        </ng-container>
+                        
+                        <!-- Date livraison Column -->
+                        <ng-container matColumnDef="date_liv">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Date de livraison</th>
+                            <td mat-cell *matCellDef="let element"> {{element.date_liv | date}} </td>
+                        </ng-container>
+                        <!-- Prix total Column -->
+                        <ng-container matColumnDef="ttc">
+                            <th mat-header-cell *matHeaderCellDef> Total (TTC) </th>
+                            <td mat-cell *matCellDef="let element">{{element.prix_ht+element.tva | number:'0.3-3'}} </td>
+                        </ng-container>
+                        <!-- Prix ht Column -->
+                        <ng-container matColumnDef="prix_ht">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Total (hors taxe) </th>
+                            <td mat-cell *matCellDef="let element">{{element.prix_ht | number:'0.3-3'}} </td>
+                        </ng-container>
+                        <!-- Prix total Column -->
+                        <ng-container matColumnDef="tva">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Montant TVA </th>
+                            <td mat-cell *matCellDef="let element">{{element.tva | number:'0.3-3'}} </td>
+                        </ng-container>
+                        <!-- Date Column -->
+                        <ng-container matColumnDef="createdAt">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Date de création </th>
+                            <td mat-cell *matCellDef="let element">{{element.createdAt | date}}</td>
+                        </ng-container>
+                        <!--Statut-->
+                        <ng-container matColumnDef="enCours">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span *ngIf="element.enCours && !element.canceled" class="btn btn-warning" (click)="elem=element;confirmCommand()">En Cours</span>
+                                <span *ngIf="element.confirmed && !element.liv" (click)="elem=element;open(livraisonModal)" class="btn btn-primary">Confirmée</span>
+                                <a *ngIf="element.confirmed && element.liv" class="btn btn-success"  routerLink="/livraison/voir-bon"
+                                [queryParams]="{id: element.bon_liv}">Confirmée</a>
+                                <span *ngIf="element.canceled" class="btn btn-danger">Annulée</span>
+                            </td>
+                        </ng-container>
+                        <!-- Action Column -->
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef> Action </th>
+                            <td mat-cell *matCellDef="let element">
+                                <div ngbDropdown placement="bottom-right">
+                                    <button class="btn btn-sm btn-icon-only text-light" ngbDropdownToggle>
+                                        <i class="ni ni-active-40 text-blue font-icon"></i>
+                                    </button>
+                                    <div ngbDropdownMenu class="dropdown-menu-right dropdown-menu-arrow">
+                                        <button *ngIf="!element.confirmed && !element.liv" class="dropdown-item" (click)="elem=element;confirmCommand()">Confirmer Commande</button>
+                                        <button *ngIf="element.confirmed && !element.liv" class="dropdown-item" (click)="elem=element;open(livraisonModal)">Créer bon de livraison</button>
+                                        <a *ngIf="element.confirmed && element.liv" class="dropdown-item" target="_blank" routerLink="/livraison/voir-bon"
+                                        [queryParams]="{id: element.bon_liv}">Consulter bon de livraison</a>
+                                        <button *ngIf="!element.canceled" class="dropdown-item" (click)="deleteCommande=element;open(deleteModal)">Annuler Commande</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index;"></tr>
+                    </table>
+                    
+                    
+                </div>
+                <div class="card-footer py-4">
+                    <mat-paginator [length]="commandesLength" [pageSize]="5"
+                    [pageSizeOptions]="[5,10]"></mat-paginator>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+  
+  </div>
+  
+  <!--MODAL CANCEL-->
+  <ng-template #deleteModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Annulation Commande</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" *ngIf="deleteCommande">
+            <p><strong>Vous êtes sûrs d'annuler <span class="text-primary">"{{deleteCommande.name}}"</span> ?</strong></p>
+            <!--<p>This command will no longer be displayed.
+            <span class="text-danger">This operation can not be undone.</span>
+            </p>-->
+          </div>
+          <div class="modal-footer">
+              <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button type="button" class="btn btn-danger" (click)="deleteCommands()">Confirmer</button>
+          </div>
+    </div>
+  </ng-template>
+  <!--MODAL LIVRAISON-->
+  <ng-template #livraisonModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Bon de livraison</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" *ngIf="elem">
+            <p>Après la confirmation de la commande, vous pouvez créer un formulaire de livraison pour terminer la procédure.</p>
+            <a type="button" class="btn btn-primary"  routerLink="/commande/add-bon"
+            [queryParams]="{id: elem._id}">Créer un bon de livraison</a>
+           
+          </div>
+          <div class="modal-footer">
+              <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Annuler</button>
+            
+          </div>
+    </div>
+  </ng-template>
+  <!--MODAL QTE-->
+  <ng-template #qteModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Client {{client.name}}</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           
+          </div>
+          <div class="modal-footer">
+              <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button type="button" class="btn btn-danger">Commander</button>
+          </div>
+    </div>
+  </ng-template>
+  
+  
+  

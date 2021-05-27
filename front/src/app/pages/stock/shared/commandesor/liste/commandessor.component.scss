@@ -1,0 +1,47 @@
+.disp-flex{
+    display: flex;
+    justify-content: space-between;
+}
+
+::ng-deep.modal-dialog {
+    max-width: 80%;
+    margin: 1.75rem auto;
+}
+
+.font-icon{
+    font-size:18px;
+}
+
+
+::ng-deep.btn{
+    padding:5px;
+}
+::ng-deep.table thead th {
+    text-transform:none;
+}
+.product{
+    overflow-x: inherit;
+}
+
+.filtre-text{
+    border: none !important;
+    color: #666 !important;
+    margin-right: 2px;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    cursor:pointer;
+}
+.filtre-text:hover{
+    color: #4285F4 !important;
+    background: transparent !important;
+    border-bottom:2px solid #4285F4 !important;
+}
+.selected-text{
+    color: #4285F4 !important;
+    background: transparent !important;
+    border-bottom:2px solid #4285F4 !important;
+}

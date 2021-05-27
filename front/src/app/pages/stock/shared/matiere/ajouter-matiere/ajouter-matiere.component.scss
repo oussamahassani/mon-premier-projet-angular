@@ -1,0 +1,50 @@
+::ng-deep.form-control {
+    color:#000;
+  }
+  
+  
+  mat-icon {
+    cursor: pointer;
+  }
+  
+  .action-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+
+  
+  .table tbody tr td,
+  .table thead th,
+  .table thead {
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+  }
+  
+  .output {
+    padding: 20px;
+  }
+  
+  .delete {
+    color: red  ;
+  }
+  
+  .done {
+    color: green;
+  }
+  
+  .edit {
+    color: yellow;
+  }
+
+  ::ng-deep.card .table td, .card .table th {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+.pos-relative{
+  position: relative !important;
+}
+.champs-obligatoire{
+  color:#f5365c;
+  font-weight: bold;
+}

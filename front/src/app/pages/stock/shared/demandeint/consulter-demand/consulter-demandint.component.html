@@ -1,0 +1,133 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+<div class="receipt-content" style="background: transparent;margin-top: -200px;">
+    <div class="snippet">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="invoice-wrapper">
+                    <div class="payment-info">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span>No. Demande de prélèvement</span>
+                                <strong *ngIf="demand">{{demand.num}}</strong>
+
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <span>Date de création</span>
+                                <strong *ngIf="demand">{{demand.createdAt | date:'medium'}}</strong>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="line-items">
+                        <div class="headers clearfix">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table align-items-center table-flush">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">Reference</th>
+                                                <th scope="col">Designation</th>
+                                                <th scope="col">Stock</th>
+                                            
+                                                <th scope="col">Quantite Demandée</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let matiere of matieres;let i=index">
+                                                <td class="mb-0 text-sm"> {{matiere.reference}}</td>
+
+                                                <td>
+                                                    {{matiere.designation}}
+                                                </td>
+                                                <td>
+                                                    {{matiere.stock}}
+                                                </td>
+                                               
+                                                <td>
+                                                    {{getMatAsked(matiere._id)}}
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="total text-right">
+
+                            <div>
+
+                            </div>
+                        </div>
+
+                        <div class="row total" *ngIf="demand">
+                            <div class="col-sm-6">
+                                <p class="extra-notes">
+                                    <strong>Notes extra</strong>
+                                    <textarea rows="4" disabled [(ngModel)]="demand.note" cols="50"></textarea>
+
+
+                                </p>
+                            </div>
+                            <div class="col-sm-6 text-right">
+
+                                <span *ngIf="userone">Crée par : {{userone.fname}} {{userone.lname}}</span><br/>
+                                <span *ngIf="demand.statut==='Confirmed' && user">Confirmée par {{user.fname}} {{user.lname}}</span><br/>
+                                <span *ngIf="demand.statut==='Canceled' && user">Rejetée par {{user.fname}} {{user.lname}}</span>
+                            </div>
+
+                        </div>
+                        <div class="print d-flex" *ngIf="demand">
+                            <button class="btn btn-danger" *ngIf="demand.statut!='Confirmed' && demand.statut!='Canceled' && !demand.commandesor" 
+                                (click)="open(retirerModal)">Rejeter</button><br />
+                            <button class="btn btn-success" (click)="confirmDemande()" *ngIf="demand.statut!='Confirmed' && !demand.commandesor && demand.statut!='Canceled'">Confirmer</button><br />
+                            <button type="button" class="btn btn-success" *ngIf="demand.statut==='Confirmed' && demand.statut!='Canceled' && !demand.commandesor"  [routerLink]="'/'+this.category+'/commandessor/ajouter-commandesor'"
+                            [queryParams]="{id: demand._id}">Créer un bon de prélèvement</button>
+                            <button type="button" class="btn btn-success" *ngIf="demand.statut==='Confirmed' && demand.statut!='Canceled' && demand.commandesor && demand.commandesor.length>0"  [routerLink]="'/'+this.category+'/commandessor/consulter-commandesor'"
+                            [queryParams]="{id: demand.commandesor}">Consulter bon de prélèvement</button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<!--MODAL RETIRER PRODUCTION-->
+<ng-template #retirerModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Rejet de demande de prélèvement</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form >
+                <div class="form-group">
+                    <label for="note_retirer">Veuillez saisir la raison de rejet :</label><br/>
+                    <textarea rows="4" name="note_retirer" [(ngModel)]="demand.note" cols="50"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button class="btn btn-outline-secondary"
+                (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button type="button" class="btn btn-danger" (click)="rejectDemande()">Rejeter</button>
+        </div>
+    </div>
+</ng-template>

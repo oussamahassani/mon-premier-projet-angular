@@ -1,0 +1,92 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+<div class="receipt-content" style="background: transparent;margin-top: -200px;">
+	<div class="snippet">
+		<div class="row" id="bon">
+			<div class="col-md-12">
+				<div class="invoice-wrapper">
+					<div class="payment-info">
+						<div class="row">
+							<div class="col-sm-6">
+								<span style='font-size: 18px'>Numero de prélèvement :   </span>
+								<span *ngIf="command" style='font-size: 18px'>N° {{command.num}}</span>
+								
+							</div>
+							<div class="col-sm-6 text-right">
+								<span style='font-size: 18px'>Date commande :   </span>
+								<span *ngIf="command" style='font-size: 18px'>{{command.createdAt | date:'medium'}}</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="payment-details">
+						<div class="row">
+							<div class="col-sm-6" *ngIf="user">
+								<p class="client-info">
+									<span class="info-label" style='font-size: 18px' >Nom & prenom :   </span>
+									<span class="info-text" style='font-size: 18px'>{{command.creatorId.fname}} {{command.creatorId.lname}}</span>
+								</p>
+								<p class="client-info">
+									<span class="info-label" style='font-size: 18px'>Telephone : </span>
+									<span class="info-text" style='font-size: 18px'>{{command.creatorId.tel}}</span>
+								</p>
+							</div>
+							
+						</div>
+					</div>
+
+					<div class="line-items">
+						<div class="headers clearfix">
+							<div class="row">
+								<div class="table-responsive">
+									<table class="table align-items-center table-flush">
+										<thead class="thead-light">
+											<tr>
+												<th scope="col">Reference</th>
+												<th scope="col">Nom</th>
+												<th scope="col">Quantité Demandée</th>
+                                                
+                                                
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let matiere of matieres;let i=index">
+												<td class="mb-0 text-sm"> {{matiere.reference}}</td>
+												<td>{{matiere.designation}}</td>
+												<td>{{matiere.asked_quantite}}</td>  
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+                       
+
+						
+
+						
+
+					
+					</div>
+				</div>
+
+				
+			</div>
+		</div>
+		<div class="print imprime">
+			<a class="print-button" (click)="printWindow()">
+				<i class="fa fa-print"></i>
+				Imprimer
+			</a>
+		</div>
+	</div>
+	</div>
+</div>

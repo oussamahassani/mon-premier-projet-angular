@@ -1,0 +1,93 @@
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+    style="min-height: 200px;  background-size: cover; background-position: center top;">
+    <!-- Mask -->
+    <span class="mask bg-gradient-danger opacity-8"></span>
+    <!-- Header container -->
+    <div class="container-fluid d-flex align-items-center">
+        <div class="row">
+            <div class="col-lg-7 col-md-10">
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+    <div class="row">
+        <div class="col-xl-12 order-xl-1">
+            <div class="card bg-secondary shadow">
+                <div class="card-header bg-white border-0">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 class="mb-0" *ngIf="fournisseur">Fournisseur: {{fournisseur.name}}</h3>
+                        </div>
+                        <div class="col-4 text-right">
+                             <h3>Total achat: {{total_achat | number:'0.3-3'}}</h3>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h6 class="heading-small text-muted mb-2">Historique du fournisseur</h6>
+                        </div>
+
+                    </div>
+                    <div class="pl-lg-4">
+                        <div class="row" *ngIf="!receptions || receptions.length==0">
+                            <h2 class="text-center">Aucune historique pour l'instant</h2>
+                        </div>
+                        <div class="row" *ngIf="receptions && receptions.length>0">
+                            <div class="table-responsive">
+                                <table class="table align-items-center table-flush">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th scope="col">N° Demande</th>
+                                            <th scope="col">N° Commande</th>
+                                            <th scope="col">N° BR</th>
+                                            <th scope="col">Bon de livraison</th>
+                                            <th scope="col">Facture</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Statut</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr *ngFor="let element of receptions;let i=index">
+
+                                            <td class="mb-0 text-sm"> {{getDemandNumber(element._id)}}</td>
+
+                                            <td>
+                                                {{getCommandNumber(element._id)}}
+                                            </td>
+                                            <td>
+                                                {{element.num}}
+                                            </td>
+
+                                            <td>
+                                                <img *ngIf="getReceptionFile(element._id)!=false" height="150px" [src]="getReceptionFile(element._id)"/>
+                                                <span *ngIf="getReceptionFile(element._id)==false">Aucun fichier</span>
+                                            </td>
+                                            <td>
+                                                <img *ngIf="getFactureFile(element._id)!=false" height="150px" [src]="getFactureFile(element._id)"/>
+                                                <span *ngIf="getFactureFile(element._id)==false">Aucun fichier</span>
+                                            </td>
+                                            <td>
+                                                {{element.createdAt | date:'medium'}}
+                                            </td>
+                                            <td>
+                                                <span  routerLink="/receptions/voir-bon" [queryParams]="{id: element._id}" target="_blank" class="{{element.statut}} badge"></span>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

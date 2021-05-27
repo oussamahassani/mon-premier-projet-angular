@@ -1,0 +1,87 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+  
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid mt--7">
+    <div class="row">
+  
+      <div class="col">
+        <div class="card shadow">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title">Ajouter Client</h4>
+            <p class="card-category">Nouveau</p>
+          </div>
+          <div class="card-body">
+            <form class="row" [formGroup]="formClient" style="justify-content: center;">
+              <div class="col-6">
+                 
+                <div class="form-group">
+                  <label for="name">Client Name</label>
+                  <input type="text" formControlName="name" name="name" class="form-control" placeholder="Saisir le nom du client*"
+                    value="" [ngClass]="{ 'is-invalid': ft.name.errors }" />
+                  <div *ngIf="ft.name.errors" class="invalid-feedback">
+                    <div *ngIf="ft.name.errors.required">Client name is required</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" formControlName="email" name="email" class="form-control" placeholder="Saisir l'email du client*"
+                      value="" [ngClass]="{ 'is-invalid': ft.email.errors }" />
+                    <div *ngIf="ft.email.errors" class="invalid-feedback">
+                      <div *ngIf="ft.email.errors.required">Email is required</div>
+                      <div *ngIf="ft.email.errors.email">Email is not valid</div>
+                    </div>
+                  </div>
+                <div class="form-group">
+                  <label for="tel">Telephone</label>
+                  <input type="text" formControlName="tel" name="tel" class="form-control" placeholder="Numero de telephone*" value=""
+                    [ngClass]="{ 'is-invalid': ft.tel.errors }" />
+                  <div *ngIf="ft.tel.errors" class="invalid-feedback">
+                    <div *ngIf="ft.tel.errors.required">Telephone is required</div>
+                    <div *ngIf="ft.tel.errors.pattern">Telephone must be a number</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                   <!--name,mat_fis,tel,adresse,email,zone-->
+                <div class="form-group">
+                  <label for="adress">Adresse</label>
+                  <input type="text" formControlName="adresse" name="adress" class="form-control" placeholder="Saisir l'adresse du Client*" value=""
+                    [ngClass]="{ 'is-invalid':ft.adresse.errors }" />
+                  <div *ngIf="ft.adresse.errors" class="invalid-feedback">
+                    <div *ngIf="ft.adresse.errors.required">Adresse is required</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                    <label for="adress">Zone</label>
+                    <input type="text" formControlName="zone" name="zone" class="form-control" placeholder="Saisir la zone du Client*" value=""
+                      [ngClass]="{ 'is-invalid':ft.zone.errors }" />
+                    <div *ngIf="ft.zone.errors" class="invalid-feedback">
+                      <div *ngIf="ft.zone.errors.required">Zone is required</div>
+                    </div>
+                  </div>
+                <div class="form-group">
+                    <label for="mat_fis">Matricule Fiscale</label>
+                    <input type="text" formControlName="mat_fis" name="mat_fis" class="form-control" placeholder="Saisir la matricule fiscale*"
+                      value="" [ngClass]="{ 'is-invalid':ft.mat_fis.errors }" />
+                    <div *ngIf="ft.mat_fis.errors" class="invalid-feedback">
+                      <div *ngIf="ft.mat_fis.errors.required">Matricule fiscale is required</div>
+                    </div>
+                  </div>
+                
+               
+              </div>
+  
+              <button (click)="onAddClientSubmit()" type="submit" class="btn btn-danger pull-right"
+                [disabled]="formClient.invalid">Add Client</button>
+            </form>
+  
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </div>

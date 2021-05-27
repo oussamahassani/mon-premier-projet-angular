@@ -1,0 +1,32 @@
+.disp-flex{
+    display: flex;
+    justify-content: space-between;
+}
+
+::ng-deep.modal-dialog {
+    max-width: 80%;
+    margin: 1.75rem auto;
+}
+
+.font-icon{
+    font-size:18px;
+}
+
+.mat-row:hover {
+    cursor: pointer;
+    background-color: hsla(0,0%,78.4%,.2);
+    box-shadow: none;
+  }
+  .product{
+      overflow-x: inherit;
+  }
+
+.align-bottom-right{
+    margin-left: 2px;
+    float: right;
+    vertical-align : bottom;
+  }
+
+  .w200{
+      width: 200px;
+  }

@@ -1,0 +1,424 @@
+<!--CURSOR POINTER-->
+<nav class="navbar navbar-vertical navbar-expand-md navbar-light bg-white" id="sidenav-main">
+  <div class="container-fluid">
+    <!-- Toggler -->
+    <button class="navbar-toggler" type="button" (click)="isCollapsed=!isCollapsed"
+      aria-controls="sidenav-collapse-main">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- Brand -->
+    <a class="navbar-brand pt-0 mb-2" routerLinkActive="active" [routerLink]="['/dashboard']">
+      <img src="./assets/img/brand/blue.png" class="navbar-brand-img" alt="...">
+    </a>
+    <!-- User -->
+    <ul class="nav align-items-center d-md-none">
+      <li class="nav-item" ngbDropdown placement="bottom-right">
+        <a class="nav-link nav-link-icon" role="button" ngbDropdownToggle>
+          <i class="ni ni-bell-55"></i>
+        </a>
+        <div class="dropdown-menu-arrow dropdown-menu-right" ngbDropdownMenu>
+          <a class="dropdown-item" href="javascript:void(0)">Action</a>
+          <a class="dropdown-item" href="javascript:void(0)">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="javascript:void(0)">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item" ngbDropdown placement="bottom-right">
+        <a class="nav-link" role="button" ngbDropdownToggle>
+          <div class="media align-items-center">
+            <span class="avatar avatar-sm rounded-circle">
+              <img alt="Image placeholder" src="./assets/img/theme/team-1-800x800.jpg">
+            </span>
+          </div>
+        </a>
+        <div class="dropdown-menu-arrow dropdown-menu-right" ngbDropdownMenu>
+          <div class=" dropdown-header noti-title">
+            <h6 class="text-overflow m-0">Welcome!</h6>
+          </div>
+          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
+            <i class="ni ni-single-02"></i>
+            <span>My profile</span>
+          </a>
+          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
+            <i class="ni ni-settings-gear-65"></i>
+            <span>Settings</span>
+          </a>
+          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
+            <i class="ni ni-calendar-grid-58"></i>
+            <span>Activity</span>
+          </a>
+          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
+            <i class="ni ni-support-16"></i>
+            <span>Support</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#!" class="dropdown-item">
+            <i class="ni ni-user-run"></i>
+            <span>Logout</span>
+          </a>
+        </div>
+      </li>
+    </ul>
+    <!-- Collapse -->
+    <div class="collapse navbar-collapse" [ngbCollapse]="isCollapsed" id="sidenav-collapse-main">
+      <!-- Collapse header -->
+      <div class="navbar-collapse-header d-md-none">
+        <div class="row">
+          <div class="col-6 collapse-brand">
+            <a routerLinkActive="active" [routerLink]="['/dashboard']">
+              <img src="./assets/img/brand/blue.png">
+            </a>
+          </div>
+          <div class="col-6 collapse-close">
+            <button type="button" class="navbar-toggler" (click)="isCollapsed=!isCollapsed">
+              <span></span>
+              <span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Form -->
+      <form class="mt-4 mb-3 d-md-none">
+        <div class="input-group input-group-rounded input-group-merge">
+          <input type="search" class="form-control form-control-rounded form-control-prepended" placeholder="Search"
+            aria-label="Search">
+          <div class="input-group-prepend">
+            <div class="input-group-text">
+              <span class="fa fa-search"></span>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!-- Navigation -->
+  
+
+
+      <ul class="navbar-nav nav">
+        <li routerLinkActive="active" class="nav-item ml-n1 takeleft">
+          <a class="nav-link" [routerLink]="['/dashboard']">
+            <i class="material-icons">dashboard</i>
+            <p style="color: #5e72e4;">Dashboard</p>
+          </a>
+        </li>
+        
+        <!--Fournissuers-->
+<li class="nav-item takeleft" routerLinkActive="active" style="cursor: pointer;" class="nav-item takeleft">
+  <a class="nav-link" (click)="FOexpanded = !FOexpanded">
+    <i class="material-icons">people_alt</i>
+    <p style="color: #5e72e4;"> <strong>Gestion fournisseurs</strong>
+      <span fxFlex>
+        <span fxFlex></span>
+        <mat-icon [@indicatorRotate]="FOexpanded ? 'FOcollapsed' : 'FOexpanded'" class="float-right">
+          expand_more
+        </mat-icon>
+      </span>
+    </p>
+  </a>
+</li>
+<div *ngIf="FOexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/fournisseurs/ajouter-fournisseur']">
+      <i class="material-icons">person_add</i>
+      <p>Ajouter fournisseur</p>
+    </a>
+  </li>
+</div>
+<div *ngIf="FOexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/fournisseurs']">
+      <i class="material-icons">list_alt</i>
+      <p>Liste des fournissuers</p>
+    </a>
+  </li>
+</div>
+
+<!--dossier fournissuer-->
+<li class="nav-item takeleft" routerLinkActive="active" style="cursor: pointer;" class="nav-item takeleft">
+  <a class="nav-link" (click)="DSexpanded = !DSexpanded">
+    <i class="material-icons">label</i>
+    <p style="color: #5e72e4;">Dossier Fournisseur
+      <span fxFlex>
+        <span fxFlex></span>
+        <mat-icon [@indicatorRotate]="DSexpanded ? 'DScollapsed' : 'DSexpanded'" class="float-right">
+          expand_more
+        </mat-icon>
+      </span>
+    </p>
+  </a>
+</li>
+<div *ngIf="DSexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/listeDossier/ajouterDossier']">
+      <i class="material-icons">exposure_plus_1</i>
+      <p>Ajouter Dossier</p>
+    </a>
+  </li>
+</div>
+<div *ngIf="DSexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/listeDossier']">
+      <i class="material-icons">list_alt</i>
+      <p>Liste Dossier</p>
+    </a>
+  </li>
+</div>
+<!--MP-->
+<li class="nav-item takeleft" routerLinkActive="active" style="cursor: pointer;" class="nav-item takeleft">
+  <a class="nav-link" (click)="MPexpanded = !MPexpanded">
+    <i class="material-icons">whatshot</i>
+    <p style="color: #5e72e4;"> <strong>Gestion de stock</strong>
+      <span fxFlex>
+        <span fxFlex></span>
+        <mat-icon [@indicatorRotate]="MPexpanded ? 'MPcollapsed' : 'MPexpanded'" class="float-right">
+          expand_more
+        </mat-icon>
+      </span>
+    </p>
+  </a>
+</li>
+<div *ngIf="MPexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/mp/famille/ajouter']">
+      <i class="material-icons">exposure_plus_1</i>
+      <p>Ajouter une famille</p>
+    </a>
+  </li>
+</div>
+<div *ngIf="MPexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/mp/famille']">
+      <i class="material-icons">list_alt</i>
+      <p>Liste des familles</p>
+    </a>
+  </li>
+</div>
+<div *ngIf="MPexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/mp/matieres']" [queryParams]="{type: 'matiere'}">
+      <i class="material-icons">list</i>
+      <p>Liste des matieres</p>
+    </a>
+  </li>
+</div>
+<div *ngIf="MPexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/mp/matieres/ajouter-matiere']">
+      <i class="material-icons">post_add</i>
+      <p>Ajouter matiere</p>
+    </a>
+  </li>
+</div>
+
+<!--END MATIERE PREMIERE-->
+ <!--service gestion-->  
+ <li class="nav-item takeleft" routerLinkActive="active" style="cursor: pointer;" class="nav-item takeleft">
+  <a class="nav-link" (click)="Gsexpanded = !Gsexpanded">
+    <i class="material-icons">chrome_reader_mode</i>
+    <p style="color: #5e72e4;">Gestion des Services
+      <span fxFlex>
+        <span fxFlex></span>
+        <mat-icon [@indicatorRotate]="Gsexpanded ? 'Gscollapsed' : 'Gsexpanded'" class="float-right">
+          expand_more
+        </mat-icon>
+      </span>
+    </p>
+  </a>
+</li>
+
+<div *ngIf="Gsexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/services/add']">
+      <i class="material-icons">library_add</i>
+      <p>Ajouter Services</p>
+    </a>
+  </li>
+</div>
+
+<div *ngIf="Gsexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/services']" [queryParams]="{type: 'service'}">
+      <i class="material-icons">library_add</i>
+      <p>liste services </p></a>
+  </li>
+</div>
+ <!--end services gestion-->
+
+<!--Type Matier-->
+<li class="nav-item takeleft" routerLinkActive="active" style="cursor: pointer;" class="nav-item takeleft">
+  <a class="nav-link" (click)="TYexpanded = !TYexpanded">
+    <i class="material-icons">label</i>
+    <p style="color: #5e72e4;">Gestion des inventaires
+      <span fxFlex>
+        <span fxFlex></span>
+        <mat-icon [@indicatorRotate]="TYexpanded ? 'TYcollapsed' : 'TYexpanded'" class="float-right">
+          expand_more
+        </mat-icon>
+      </span>
+    </p>
+  </a>
+</li>
+<div *ngIf="TYexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/mp/inventaires/ajouter-inventaire']" [queryParams]="{type: 'inventaire'}">
+      <i class="material-icons">store</i>
+      <p>Ajouter inventaire</p>
+    </a>
+  </li>
+</div>
+<div *ngIf="TYexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/mp/inventaires']">
+      <i class="material-icons">store</i>
+      <p>Liste des inventaires</p>
+    </a>
+  </li>
+</div>
+
+
+<!--END type matier-->
+
+<!--END FOURNISSEURS-->
+
+<!--START DEMANDE ACHAT-->
+<li class="nav-item takeleft" routerLinkActive="active" style="cursor: pointer;" class="nav-item takeleft">
+  <a class="nav-link" (click)="DAexpanded = !DAexpanded">
+    <i class="material-icons">chrome_reader_mode</i>
+    <p style="color: #5e72e4;">Demandes d'achat
+      <span fxFlex>
+        <span fxFlex></span>
+        <mat-icon [@indicatorRotate]="DAexpanded ? 'DAcollapsed' : 'DAexpanded'" class="float-right">
+          expand_more
+        </mat-icon>
+      </span>
+    </p>
+  </a>
+</li>
+
+<div *ngIf="DAexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/mp/demandes/ajouter']" [queryParams]="{type: 'achat'}">
+      <i class="material-icons">library_add</i>
+      <p>Nouvelle demande</p>
+    </a>
+  </li>
+</div>
+
+<div *ngIf="DAexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/Demandedeparix']" >
+      <i class="material-icons">library_add</i>
+      <p>demande d'offre de prix </p></a>
+  </li>
+</div>
+<div *ngIf="DAexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/mp/demandes']">
+      <i class="material-icons">library_books</i>
+      <p>Liste des demandes</p>
+    </a>
+  </li>
+</div>
+
+<!--END DEMANDE ACHAT-->
+<li class="nav-item takeleft" routerLinkActive="active" style="cursor: pointer;" class="nav-item takeleft">
+  <a class="nav-link" (click)="DIexpanded = !DIexpanded">
+    <i class="material-icons">chrome_reader_mode</i>
+    <p style="color: #5e72e4;">Demandes de prélèvement
+      <span fxFlex>
+        <span fxFlex></span>
+        <mat-icon [@indicatorRotate]="DIexpanded ? 'DIcollapsed' : 'DIexpanded'" class="float-right">
+          expand_more
+        </mat-icon>
+      </span>
+    </p>
+  </a>
+</li>
+
+<div *ngIf="DIexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/mp/demandesint/ajouter']" [queryParams]="{type: 'sortie'}">
+      <i class="material-icons">library_add</i>
+      <p>Nouvelle demande</p>
+    </a>
+  </li>
+</div>
+<div *ngIf="DIexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/mp/demandesint']">
+      <i class="material-icons">library_books</i>
+      <p>Liste des demandes</p>
+    </a>
+  </li>
+</div>
+
+<!--START DEMANDE ACHAT-->
+<li class="nav-item takeleft" routerLinkActive="active" style="cursor: pointer;" class="nav-item takeleft">
+  <a class="nav-link" (click)="BOexpanded = !BOexpanded">
+    <i class="material-icons">description</i>
+    <p style="color: #5e72e4;">Gestion des bons
+      <span fxFlex>
+        <span fxFlex></span>
+        <mat-icon [@indicatorRotate]="BOexpanded ? 'BOcollapsed' : 'BOexpanded'" class="float-right">
+          expand_more
+        </mat-icon>
+      </span>
+    </p>
+  </a>
+</li>
+<div *ngIf="BOexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/mp/commandesap']">
+      <i class="material-icons">shopping_cart</i>
+      <p>Bons de commande</p>
+    </a>
+  </li>
+</div>
+<div *ngIf="BOexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/mp/receptions']">
+      <i class="material-icons">local_shipping</i>
+      <p>Bons de réception</p>
+    </a>
+  </li>
+</div>
+<div *ngIf="BOexpanded">
+  <li routerLinkActive="active" class="nav-item ml-n1">
+    <a class="nav-link" [routerLink]="['/mp/commandessor']">
+      <i class="material-icons">shopping_cart</i>
+      <p>Bons de prélèvement</p>
+    </a>
+  </li>
+</div>
+
+<!--END BON-->
+        <li routerLinkActive="active" class="nav-item takeleft">
+          <a class="nav-link" [routerLink]="['/mp/factures']" [queryParams]="{type: 'interne'}">
+            <i class="material-icons">assignment</i>
+            <p style="color: #5e72e4;">Liste des factures</p>
+          </a>
+        </li>
+        <li routerLinkActive="active" class="nav-item takeleft">
+          <a class="nav-link" [routerLink]="['/users']">
+            <i class="material-icons">person</i>
+            <p style="color: #5e72e4;">Users</p>
+          </a>
+        </li>
+        <li routerLinkActive="active" class="nav-item takeleft">
+          <a class="nav-link" [routerLink]="['/groupes']">
+            <i class="material-icons">lock</i>
+            <p style="color: #5e72e4;">Groupes</p>
+          </a>
+        </li>
+        
+      </ul>
+    
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+
+

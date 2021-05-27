@@ -1,0 +1,183 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+            <mat-slide-toggle   color="primary" on-change="toggledtype()" > {{valeurtypedemande}}  </mat-slide-toggle> 
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header border-0 disp-flex">
+                    <div class="mb-0">
+                        <h3>Gestion demandes d'achat</h3>
+                     
+                            <mat-select class="mt-4" [(ngModel)]="selectedValue" >
+
+                                <mat-option value="0" class="filtre-text" (click)="getType(0)">Tous</mat-option>
+                                <mat-option value="1" class="filtre-text" (click)="getType(1)">Confirmée</mat-option>
+                                <mat-option value="2" class="filtre-text" (click)="getType(2)">En Attente</mat-option>
+                                <mat-option value="3" class="filtre-text" (click)="getType(3)">Rejetée</mat-option>
+                            </mat-select>
+                       
+                    </div>
+                 
+                    <div class="mb-0" style="display:grid">
+
+
+                        <form
+                            class="navbar-search navbar-search-light form-inline mr-3 d-none d-md-flex ml-lg-auto mt-3">
+                            <div class="form-group mb-0" [ngClass]="{ 'focused': focus === true }">
+                                <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    </div>
+
+                                    <input class="form-control" placeholder="Rechercher" type="text" #input>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+                </div>
+                <div class="product">
+                    <mat-card *ngIf="loading" style="display: flex; justify-content: center; align-items: center;">
+                        <mat-progress-spinner diameter="40" 
+                          mode="indeterminate">
+                        </mat-progress-spinner>
+                      </mat-card>
+                    <table mat-table [dataSource]="datasour" matSort
+                        class="table  mat-elevation-z8 align-items-center table-flush">
+                        <!-- Demande number Column -->
+                        <ng-container matColumnDef="num">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>N°.Demandes</th>
+                            <td mat-cell *matCellDef="let element"> {{element.num}} </td>
+                        </ng-container>
+                        <!-- User name Column -->
+                        <ng-container matColumnDef="creatorId">
+                            <th mat-header-cell *matHeaderCellDef>Employée</th>
+                            <td mat-cell *matCellDef="let element"> {{element.creatorId.fname}} {{element.creatorId.lname}} </td>
+                        </ng-container>
+                        <!--['num','creatorId','date_maximale','createdAt','enAttente', 'action']-->
+                        <!-- Created at Column -->
+                        <ng-container matColumnDef="createdAt">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Date de création </th>
+                            <td mat-cell *matCellDef="let element">{{element.createdAt | date}} </td>
+                        </ng-container>
+                        <!--Statut-->
+                        <ng-container matColumnDef="statut">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span  [ngClass]="(element.statut=='Confirmed')?'Confirmedes badge-pile':'attentees badge-pile'">{{element.statut}}</span>
+                            </td>
+                        </ng-container>
+                        
+                       
+                        
+                        <!-- Action Column -->
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef> Action </th>
+                            <td mat-cell *matCellDef="let element">
+                                <div ngbDropdown placement="bottom-right">
+                                    <button class="btn btn-sm btn-icon-only text-light" ngbDropdownToggle>
+                                        <i class="ni ni-active-40 text-blue font-icon"></i>
+                                    </button>
+                                    <div ngbDropdownMenu class="dropdown-menu-right dropdown-menu-arrow">
+                                        <button *ngIf="valeurtypedemande=='stock'" class="dropdown-item" routerLink="consulter-demande"
+                                            [queryParams]="{id: element._id}">Consulter les détails de la
+                                            demande</button>
+                                            <button *ngIf="valeurtypedemande=='service'" class="dropdown-item" routerLink="consulter-service"
+                                            [queryParams]="{id: element._id}">Consulter les détails de la
+                                            demande</button>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index;"></tr>
+                    </table>
+
+
+                </div>
+                <div class="card-footer py-4">
+                    <mat-paginator [length]="demandesLength" [pageSize]="5" [pageSizeOptions]="[5,10]"></mat-paginator>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!--MODAL CANCEL-->
+<ng-template #deleteModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Annulation Demande</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" *ngIf="deleteDemande">
+            <p><strong>Vous êtes sûrs d'annuler <span class="text-primary">"{{deleteDemande.num}}"</span> ?</strong></p>
+            <!--<p>This command will no longer be displayed.
+            <span class="text-danger">This operation can not be undone.</span>
+            </p>-->
+        </div>
+        <div class="modal-footer">
+            <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button class="btn btn-outline-secondary"
+                (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button type="button" class="btn btn-danger" (click)="deleteDemandes()">Confirmer</button>
+        </div>
+    </div>
+</ng-template>
+<!--MODAL LIVRAISON-->
+<ng-template #commandModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Commander</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" *ngIf="elem">
+            <p>Après la confirmation de la demande, vous pouvez créer un bon de commande pour poursuivre la procédure.
+            </p>
+            <button type="button" class="btn btn-primary" (click)="navigateBon(elem._id)">Créer un bon de
+                commande</button>
+        </div>
+        <div class="modal-footer">
+            <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button class="btn btn-outline-secondary"
+                (click)="modal.dismiss('cancel click')">Annuler</button>
+
+        </div>
+    </div>
+
+  
+  
+   <!--MODAL export-->
+   <ng-template #exportModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Téléchargement de la liste des demandes</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Vous êtes sur de vouloir télécharger la liste ?</strong></p>
+          </div>
+          <div class="modal-footer">
+              <!--modal.close('Ok click')-->
+            <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+            <button [disabled]="exporting" type="button" class="btn btn-primary" (click)="exporter('excel')"><i *ngIf="exporting" class="fa fa-spinner fa-spin mr-2"></i>Télécharger</button>
+          </div>
+    </div>
+  </ng-template>

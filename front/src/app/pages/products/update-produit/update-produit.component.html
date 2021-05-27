@@ -1,0 +1,86 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+  
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid mt--7">
+    <div class="row">
+  
+      <div class="col">
+        <div class="card shadow">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title">Update Produit</h4>
+            <p class="card-category" *ngIf="product">{{product.name}}</p>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group form-input-file">
+                  <input #imageInput placeholder="Product Image" (change)="updateImage(imageInput)" name="couv" type="file"
+                    accept="image/*" class="inputfile">
+                  <label for="couv">Image*</label>
+                </div>
+              </div>
+              <div class="col-6 text-center" *ngIf="previewURL">
+                <img src="{{previewURL}}" height="80px"/>
+             </div>
+            </div>
+            <form class="row" style="justify-content: center;" *ngIf="product">
+              <div class="col-6">
+  
+                <div class="form-group">
+                    <label for="code">UGS</label>
+                  <input type="text"  [(ngModel)]="product.code" name="code" class="form-control" placeholder="Entrer le UGS*" value=""
+                    />
+                 
+                </div>
+                <div class="form-group">
+                    <label for="code">Product name</label>
+                  <input type="text" [(ngModel)]="product.name" name="name" class="form-control" placeholder="Saisir le nom du produit*"
+                    value="" />
+                  
+                </div>
+                <div class="form-group">
+                    <label for="prix">Prix</label>
+                  <input type="text"  [(ngModel)]="product.prix" name="prix" class="form-control" placeholder="Unit Price*" value=""
+                    />
+                  
+                </div>
+                <div class="form-group">
+                    <label for="stock">Quantité</label>
+                  <input type="text" disabled [(ngModel)]="product.stock" name="stock" class="form-control" placeholder="Saisir la Quantité Stock*"
+                    value=""  />
+                 
+                </div>
+  
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                    <label for="tva">TVA %</label>
+                  <input type="text"  [(ngModel)]="product.tva" name="tva" class="form-control" placeholder="Saisir la TVA*" value=""
+                  />
+                  
+                </div>
+                <div class="form-group">
+                    <label for="promo">Promo</label>
+                  <input type="text"  [(ngModel)]="product.promo" name="promo" class="form-control" placeholder="Saisir la Promo*" value=""
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="remise">Remise %</label>
+                  <input type="text" [(ngModel)]="product.remise" name="remise" class="form-control" placeholder="Saisir la Remise*"
+                    value="" />
+                </div>
+              </div>
+  
+              <button (click)="updateProductSubmit()" type="submit" class="btn btn-danger pull-right">Update Product</button>
+            </form>
+  
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </div>

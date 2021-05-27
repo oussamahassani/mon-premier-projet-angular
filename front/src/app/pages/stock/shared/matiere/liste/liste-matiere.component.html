@@ -1,0 +1,285 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+            <a *ngIf="type==='achat'" class="col-md-4 colorwhite" routerLink="/services"
+                                            [queryParams]="{type: 'achat'}" > Liste demande service </a>
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+    <!-- Table -->
+    <div class="row">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header border-0">
+                    <div class="row justify-content-center" *ngIf="type=='matiere'">
+                        <a routerLink="/mp/matieres/ajouter-matiere" 
+                        class="btn btn-primary col-md-3">Ajouter matiere</a>
+                        <button (click)="open(exportModal)" class="btn btn-primary col-md-2">Exporter</button>
+                        <button (click)="open(importModal)" class="btn btn-primary col-md-2">importer</button>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-3 mt-5 ml-2">
+                            <mat-select class="mt-4" [(ngModel)]="familyFilter" [value]="'1'"
+                                name="filtre">
+                                <mat-option class="filtre-text" value="1" (click)="filtre()">Famille</mat-option>
+                                <mat-option  *ngFor="let one of families" (click)="filtre()" [value]="one._id" >{{one.name}}</mat-option>
+                            </mat-select>
+                        </div>
+                        <div class="col-md-3 mt-5">
+                            <mat-select class="mt-4" *ngIf="type=='matiere'" [(ngModel)]="activeFilter" [value]="'1'"
+                                name="filtre">
+                                <mat-option class="filtre-text" value="1" (click)="filtre()">Actives/Inactives
+                                </mat-option>
+                                <mat-option class="filtre-text" [value]="'true'" (click)="filtre()">Matières actives
+                                </mat-option>
+                                <mat-option class="filtre-text" [value]="'false'" (click)="filtre()">Matières inactives
+                                </mat-option>
+                            </mat-select>
+                        </div>
+                        <div class="col-md-2"></div>
+                    <div class="col-md-3" style="display:grid">
+                            <button class="btn btn-sm btn-primary mt-2"
+                            [disabled]="selectedItems.length==0 || isInventaire" *ngIf="type=='achat'"
+                            (click)="grouperDemande()">Ajouter Demande d'achat</button>
+                        <button class="btn btn-sm btn-primary mt-2"
+                            [disabled]="selectedItems.length==0 || isInventaire" *ngIf="type=='sortie'"
+                            (click)="grouperDemandeInt()">Ajouter Demande de prélèvement</button>
+                        <button class="btn btn-sm btn-primary mt-2" [disabled]="selectedItems.length==0"
+                            *ngIf="type=='inventaire'" (click)="open(noteModal)">Executer l'inventaire</button>
+                        <form
+                            class="navbar-search navbar-search-light form-inline mr-3 d-none d-md-flex ml-lg-auto mt-3">
+                            <div class="form-group mb-0" [ngClass]="{ 'focused': focus === true }">
+                                <div class="input-group input-group-alternative">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    </div>
+                                    <!--(keyup)="doFilter($event.target.value)" (blur)="focus = false" (focus)="focus = true"-->
+                                    <input class="form-control" placeholder="Rechercher" type="text" #input>
+                                </div>
+                            </div>
+                        </form>
+                </div>
+                </div>
+
+                <div class="matiere card-body">
+                    <mat-card *ngIf="dataSource.loading$ | async" style="display: flex; justify-content: center; align-items: center;">
+                        <mat-progress-spinner diameter="40" 
+                          mode="indeterminate">
+                        </mat-progress-spinner>
+                      </mat-card>
+
+                    <table mat-table [dataSource]="dataSource" matSort
+                        class="table mat-elevation-z8 align-items-center table-flush">
+                        <ng-container matColumnDef="checked">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox aria-label="Select All" 
+                                    [checked]="isChecked()" [indeterminate]="isIndeterminate()" 
+                                    (change)="$event ? toggleAll($event) : null">
+                                </mat-checkbox>
+                            </th>
+                            <!-- <th mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox (change)="$event ? masterToggle() : null"
+                                              [checked]="selection.hasValue() && isAllSelected()"
+                                              [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                              [aria-label]="checkboxLabel()">
+                                </mat-checkbox>
+                              </th>-->
+                            <td mat-cell *matCellDef="let element">
+                                <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? toggle(element,$event) : null"
+                                    [checked]="exists(element)" [aria-label]="checkboxLabel(element)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+
+
+                        <!-- Reference Column -->
+                        <ng-container matColumnDef="reference">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Reference </th>
+                            <td mat-cell *matCellDef="let element"> {{element.reference}} </td>
+                        </ng-container>
+                        <!--['image','reference','label','stock','lots','createdAt', 'action']-->
+                        <!-- Label Column -->
+                        <ng-container matColumnDef="designation">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Désignation </th>
+                            <td mat-cell *matCellDef="let element"> {{element.designation}} </td>
+                        </ng-container>
+                        <!-- Unite de mesure Column -->
+                        <ng-container matColumnDef="nature_stock">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Unité</th>
+                            <td mat-cell *matCellDef="let element"> {{element.nature_stock}} </td>
+                        </ng-container>
+                        <!-- Total stock Column -->
+                        <ng-container matColumnDef="stock">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                <span >Total stock</span>
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <span *ngIf="element.stock>element.stock_securite"
+                                    class="text-success">{{element.stock}}</span>
+                                <span *ngIf="element.stock<=element.stock_securite"
+                                    class="text-danger">{{element.stock}}</span>
+                            </td>
+                        </ng-container>
+                        <!--'stock_securite','stock_max'-->
+                        <ng-container matColumnDef="stock_securite">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                Stock min
+                            </th>
+                            <td mat-cell *matCellDef="let element"> {{element.stock_securite}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="stock_max">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                Stock max
+                            </th>
+                            <td mat-cell *matCellDef="let element"> {{element.stock_max}} </td>
+                        </ng-container>
+
+                     
+
+                        <ng-container matColumnDef="valeur">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                Valeur global
+                            </th>
+                            <td mat-cell *matCellDef="let element"> {{element.cmp*element.stock | number : '0.3-3' : 'fr'}} </td>
+                        </ng-container>
+                       
+                        <!-- Total stock Column -->
+                        <ng-container matColumnDef="prix_achat">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+   
+                               CMP
+                            </th>
+                            <!--1.2-2-->
+                            <td mat-cell *matCellDef="let element">
+                                <span>{{element.prix_achat | number:'0.3-3' :'fr'}}</span>
+                            </td>
+                        </ng-container>
+                        <!-- Action Column -->
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef> Action </th>
+                            <td mat-cell *matCellDef="let element">
+                                <div ngbDropdown placement="bottom-right">
+                                    <button class="btn btn-sm btn-icon-only text-light" ngbDropdownToggle>
+                                        <i class="ni ni-active-40 text-blue font-icon"></i>
+                                    </button>
+                                    <div ngbDropdownMenu class="dropdown-menu-right dropdown-menu-arrow">
+                                        <a *ngIf="type==='matiere'" class="dropdown-item" routerLink="/mp/matieres/consulter-matiere"
+                                            [queryParams]="{id: element._id}">Consulter les informations</a>
+                                        <a *ngIf="type==='matiere'" class="dropdown-item" routerLink="/mp/matieres/consulter-mouvement"
+                                            [queryParams]="{id: element._id}">Consulter l'état de
+                                            mouvement</a>
+                                        <button *ngIf="type==='matiere'" class="dropdown-item"
+                                            (click)="deleteMatiere=element;open(deleteModal)">Desactiver</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index;" [ngClass]="{'alertstock': row.stock <= row.stock_securite}"></tr>
+                    </table>
+                    <mat-paginator [length]="matieresLength" [pageSize]="5"
+                    [pageSizeOptions]="[5,10]"></mat-paginator>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!--MODAL DESACTIVER-->
+<ng-template #deleteModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Désactivation d'une matière</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body" *ngIf="deleteMatiere">
+            <p><strong>Est vous sur de vouloir désactivé cette matière première ?</strong></p>
+        </div>
+        <div class="modal-footer">
+            <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button class="btn btn-outline-secondary"
+                (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button type="button" class="btn btn-danger" (click)="deleteMatieres()">Désactiver</button>
+        </div>
+    </div>
+</ng-template>
+<!--MODAL INVENTAIRE-->
+<ng-template #noteModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Inventaire</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>Voulez vous ajouter une note pour l'inventaire ?</p>
+            <textarea rows="4" [(ngModel)]="note" cols="50"></textarea>
+
+            <p></p>
+        </div>
+        <div class="modal-footer">
+            <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button  class="btn btn-danger" (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button type="button" class="btn btn-primary" (click)="applyInventaire()">Executer inventaire</button>
+        </div>
+    </div>
+</ng-template>
+
+   <!--MODAL export-->
+   <ng-template #exportModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Téléchargement de la liste des matières première</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Vous êtes sur de vouloir télécharger la liste ?</strong></p>
+          </div>
+          <div class="modal-footer">
+              <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button mat-raised-button class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button [disabled]="exporting" type="button" class="btn btn-primary" (click)="exporter('excel')"><i *ngIf="exporting" class="fa fa-spinner fa-spin mr-2"></i>Télécharger</button>
+          </div>
+    </div>
+  </ng-template>
+
+  <!--MODAL import-->
+  <ng-template #importModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Importation des matières première</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h4><strong>Le fichier doit contenir les colones comme indiquer dans l'image ci dessous. sauf la "Mesure de securite" et la "Norme de qualite" tout est requis.</strong></h4>
+            <img class="img-fluid" src="./assets/img/example-list-mp.jpg"/>
+            <a href="./assets/files/liste_des_mp-example.xlsx" class="float-left btn btn-secondary mt-2 mb-n4"><i *ngIf="exporting" class="fa fa-download fa-spin mr-2"></i>Télécharger le fichier exemple</a>
+
+          </div>
+          <div class="modal-footer mt-n2">
+            <div class="custom-file">
+                <input  type="file" id="file" class="custom-file-input" lang="fr"
+                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                (change)="handleFileInput($event.target.files)">
+                <label class="custom-file-label" for="file">Fichier à importer</label>
+              </div>
+            <!--modal.close('Ok click')-->
+            <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+            <button [disabled]="importing || !fileToUpload" type="button" class="btn btn-primary" (click)="importer()"><i *ngIf="importing" class="fa fa-spinner fa-spin mr-2"></i>Importer</button>
+          </div>
+    </div>
+  </ng-template>

@@ -1,0 +1,256 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+<div class="receipt-content" style="background: transparent;margin-top: -200px;">
+	<div class="snippet">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="invoice-wrapper" id="bonreception">
+					<div class="payment-info">
+						<div class="row">
+							<div class="col-sm-6">
+								<span style='font-size: 18px'>No. Bon de reception :   </span>
+								<span style='font-size: 18px'>{{name}}</span>
+							</div>
+							<div class="col-sm-6 text-right">
+								<span style='font-size: 18px'>Date de reception  </span>
+								<span style='font-size: 18px'>{{now | date:'medium'}}</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="payment-details">
+						<div class="row">
+
+							<div class="col-sm-6" *ngIf="fournisseur">
+								<p class="client-info">
+									<span class="info-label" style='font-size: 18px'>Nom : </span>
+									<span class="info-text" style='font-size: 18px'>{{fournisseur.name}}</span>
+								</p>
+								<p class="client-info">
+									<span class="info-label" style='font-size: 18px'>Adresse : </span>
+									<span class="info-text" style='font-size: 18px'>{{fournisseur.adresse}}</span>
+								</p>
+								<p class="client-info">
+									<span class="info-label" style='font-size: 18px'>Telephone : </span>
+									<span class="info-text" style='font-size: 18px'>{{fournisseur.tel}}</span>
+								</p>
+							</div>
+							<div class="col-sm-6" *ngIf="fournisseur">
+								<div class="float-right">
+									<p class="client-info">
+										<span class="info-label" style='font-size: 18px'>Matricule Fiscale : </span>
+										<span class="info-text" style='font-size: 18px'>{{fournisseur.mat_fis}}</span>
+									</p>
+									<p class="client-info">
+										<span class="info-label" style='font-size: 18px'>Email : </span>
+										<span class="info-text" style='font-size: 18px'>{{fournisseur.email}}</span>
+									</p>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="line-items">
+						<div class="headers clearfix">
+							<div class="row header-matiere">
+								<div class="col" style='font-size: 18px'>N°Mat</div>
+								<div class="col" style='font-size: 18px'>Reference</div>
+								<div class="col" style='font-size: 18px'>Nom</div>
+								<div class="col" style='font-size: 18px'>Nbr Lot</div>
+								<div class="col" style='font-size: 18px'>Prix (HT)</div>
+								<div class="col" style='font-size: 18px'>Qte Demandée</div>
+								<div class="col" style='font-size: 18px'>Qte reçu</div>	
+							</div>
+							<div class="row mt-2 mb-2" *ngFor="let mat of matieres;let i=index">
+								<div class="row col-12 mat-holder">
+									<div class="col" style='font-size: 18px'><strong>Matiere {{i+1}}</strong></div>
+									<div class="col" style='font-size: 18px'>{{mat.reference}}</div>
+									<div class="col" style='font-size: 18px'>{{mat.designation}}</div>
+									<div class="col">
+										<input type="number" [disabled]="mat.asked_quantite==1 && mat.livred_quantite==1" [(ngModel)]="mat.lots_nbr" onKeyDown="return false" min="1" class="form-control"
+											(change)="changerNbrLot($event,i)" />
+									</div>
+									<div class="col">
+										<input type="number" [(ngModel)]="mat.prix_achat" min="1" class="form-control"
+											(change)="changerPrix($event)"  />
+									</div>
+									
+									<div class="col" style='font-size: 18px'>{{mat.asked_quantite}}</div>
+									<div class="col">
+										<input type="number" [disabled]="mat.lots_nbr>0"
+											[(ngModel)]="mat.livred_quantite" onkeypress="return event.charCode >= 48" min="1" class="form-control"
+											(change)="changerQuantite($event)" />
+									</div>
+									
+								</div>
+								<div class="table-responsive mt-2 ml-2" *ngIf="mat.lots_nbr>0">
+									<table class="table align-items-center table-flush">
+										<thead class="thead-light">
+											<tr>
+												<th scope="col">N° Lot</th> 
+												<th scope="col">Code</th>
+												<th scope="col">Qte</th>
+												<th scope="col">Prix unitaire</th>
+												<th scope="col">Date expiration</th>
+												<th scope="col">Note</th>
+												<th scope="col">Déranger </th>
+												<th scope="col">commande conforme</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let lot of mat.lots;let j=index">
+												<td>
+                                                  <strong>Lot {{j+1}}</strong>
+												</td>
+												<td class="mb-0 text-sm">
+
+													<input type="text" [(ngModel)]="lot.code" (change)="changeCode($event,j)" class="form-control"
+														placeholder=""  [ngClass]="{ 'is-invalid': foundCode}"/>
+												</td>
+
+												<td>
+													<input type="number" [(ngModel)]="lot.quantite" onkeypress="return event.charCode >= 48" min="1" class="form-control"
+														placeholder="" (change)="changeLotQuantite($event,i)"/>
+												</td>
+												<td>
+													{{mat.prix_achat}}
+													
+												</td>
+												<td>
+													<span *ngIf="lot.isExpire">
+														<mat-form-field>
+															<input matInput [matDatepicker]="picker3" [min]="now"
+																[(ngModel)]="lot.date_expiration" [value]="lot.date_expiration.value">
+															<mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+															<mat-datepicker #picker3></mat-datepicker>
+														</mat-form-field>
+													</span>
+													<span *ngIf="!lot.isExpire">Aucune</span>
+												</td>
+												<td>
+													<textarea rows="3" [(ngModel)]="lot.note"  cols="20"></textarea>
+												</td>
+												<td><mat-checkbox   [(ngModel)] = "lot.is_deranger" (change)="isderanger($event,i,j)">deranger !</mat-checkbox></td>
+												<td>	<mat-checkbox   [(ngModel)] = "lot.is_comfirmed" (change)="checkValue($event,i,j)"  class="example-margin">conforme!</mat-checkbox></td>
+												
+							
+												
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+
+
+							</div>
+						</div>
+
+
+
+						
+
+						<div class="row total">
+							<div class="col-sm-8">
+								<p class="extra-notes">
+									<span style='font-size: 18px'>Extra Notes   </span>
+									<textarea rows="4" [(ngModel)]="note" cols="50"></textarea>
+
+								</p>
+							</div>
+							<div class="col-sm-4 text-right" *ngIf="command">
+								<div class="float-right">
+									<div class="field">
+										<span class="field-label" style='font-size: 18px'>Montant hors taxe</span>
+										<span class="field-value">
+											<div class="form-group">
+
+												<span
+													class="form-control span-input">{{command.total_ht | number:'0.3-3'}}</span>
+											</div>
+										</span>
+									</div>
+									<div class="field">
+										<span class="field-label" style='font-size: 18px'>Montant TVA</span>
+										<span class="field-value">
+											<div class="form-group">
+
+												<span
+													class="form-control span-input">{{command.total_tva | number:'0.3-3'}}</span>
+											</div>
+										</span>
+									</div>
+									<div class="field grand-total">
+										<span class="field-label" style='font-size: 18px'>Montant TTC</span>
+										<span class="field-value">
+											<div class="form-group">
+
+												<span
+													class="form-control span-input">{{command.total_ht+command.total_tva | number:'0.3-3'}}</span>
+											</div>
+										</span>
+									</div><br />
+									<div class="field">
+										<span class="field-label">Statut</span> 
+										<span class="field-value">
+											<div class="form-group">
+												<select class="form-control"  (change)="changerStatut($event)" [(ngModel)]="statutValue">
+													<option *ngFor="let value of values" [value]="value">{{value}}</option>
+												  </select>
+											</div>
+										</span>
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+					
+					</div>
+				</div>
+				<div class="print imprime">
+					<button class="btn btn-success" [disabled]="foundCode" *ngIf="!changedPrix && !changedQte"
+						(click)="submitReception()">Sauvegarder</button><br />
+					<button class="btn btn-success" [disabled]="foundCode" *ngIf="changedPrix || changedQte"
+						(click)="open(changeModal)">Sauvegarder</button>
+			
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<ng-template #changeModal let-modal>
+	<div class="modal-content">
+		<div class="modal-header">
+			<h4 class="modal-title" id="modal-title">Confirmation du changement</h4>
+			<button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body">
+
+			<p><strong><span *ngIf="changedPrix && !changedQte">Le prix de certaines matiéres a changer.</span>
+					<span *ngIf="changedQte && !changedPrix">La quantité de certaines matiéres a changer.</span>
+					<span *ngIf="changedQte && changedPrix">Le prix et la quantité de certaines matiéres ont
+						changer.</span>
+					Vous êtes sûrs de vouloir procéder a la sauvegarde ?
+				</strong>
+			</p>
+		
+		</div>
+		<div class="modal-footer">
+			<!--modal.close('Ok click')-->
+			<button type="button" mat-raised-button color="accent" class="btn btn-outline-secondary"
+				(click)="modal.dismiss('cancel click')">Annuler</button>
+			<button type="button" class="btn btn-success" (click)="submitReception()">Confirmer</button>
+		</div>
+	</div>
+</ng-template>

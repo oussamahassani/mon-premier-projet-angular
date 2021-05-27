@@ -1,0 +1,259 @@
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+  style="min-height: 200px; background-size: cover; background-position: center top;">
+  <!-- Mask -->
+  <span class="mask bg-gradient-danger opacity-8"></span>
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+    <div class="row">
+      <div class="col-lg-7 col-md-10">
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid mt--7">
+  <div class="row">
+    
+    <div class="col-xl-9 order-xl-1">
+      <div class="card bg-secondary shadow">
+        <div class="card-header bg-white border-0">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">Ajouter Dossier fournisseur</h3>
+            </div>
+            <div class="col-4 text-right">
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="formFournisseur">
+            <!-- Description -->
+            <h6 class="heading-small text-muted mb-4">choisire  fournisseur</h6>
+            <div class="pl-lg-4 row">
+              <div class="col-lg-5">
+                  
+                 
+                 
+                  
+                        <div class="card-profile-stats">
+                            <div class="custom-file">
+                              <input #imageInput placeholder="Avis arriveé" accept="image/*" lang="fr"
+                                (change)="addImage(imageInput)" type="file" class="custom-file-input" id="customFile">
+                              <label class="custom-file-label text-left" for="customFile">avis d'arrivée</label>
+                            </div>
+                          </div>
+                          <div class="col-lg-3 order-lg-2">
+                             <img *ngIf="previewURL"  [src]="previewURL" width="250px" class="rounded-circle"> 
+                    </div>
+              </div>
+                  <div class="col-lg-3">
+                    <br>
+                    <div>Nom  fournisseur<span class="champs-obligatoire">*</span> :</div>
+                  </div>
+               
+                  <div class="col-lg-3">
+                    <mat-form-field class="top-100" >
+                      <mat-select formControlName="fournisseur">
+                        <mat-option disabled value="">fournissuer</mat-option>
+                        <mat-option  *ngFor="let fournisseur of fourEtranger" [value]="fournisseur._id">{{fournisseur.name}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <div *ngIf="ft.fournisseur.errors && ft.fournisseur.touched" class="invalid-feedback">
+                      <div *ngIf="ft.fournisseur.errors.required"> fournissuer est requise</div>
+                    </div>
+                  
+                  </div>
+            </div>
+           
+            <hr class="my-4" />
+            <h6 class="heading-small text-muted mb-2">Donner Dossier Import  du fournisseur </h6>
+            <div class="pl-lg-4">
+              <div class="row mb-2">  
+              
+               
+                  <div class="form-group col-lg-6">
+                    <label for="exp">N° EXP<span class="champs-obligatoire">*</span></label>
+                   <input [ngClass]="{ 'is-invalid': ft.exp.errors && ft.exp.touched }" type="text" formControlName="exp" class="form-control"/>
+                   <div *ngIf="ft.exp.errors && ft.exp.touched" class="invalid-feedback">
+                    <div *ngIf="ft.exp.errors.required"> N° EXP est requise</div>
+                  </div>
+                    </div>
+                  
+                    <div class="form-group col-lg-6">
+                      <label for="date">Date<span class="champs-obligatoire">*</span></label>
+                     <input type="date" formControlName="date"  class="form-control"/>
+                   
+                      </div>
+                
+
+                  </div>
+                </div>
+         
+            
+              
+            
+            
+            <hr class="my-4" />
+            <h6 class="heading-small text-muted mb-4">Information du fournisseur</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+               
+                  <div class=" form-group col-lg-4">
+                  <label for="RefBC">Réf BC <span class="champs-obligatoire">*</span></label>
+                  <input  [ngClass]="{ 'is-invalid': ft.RefBC.errors && ft.RefBC.touched }"  type="text" formControlName="RefBC" name="RefBC" class="form-control"
+                    placeholder="Saisir le reference" value=""
+                    />
+                  <div *ngIf="ft.RefBC.errors && ft.RefBC.touched" class="invalid-feedback">
+                    <div *ngIf="ft.RefBC.errors.required">Réf BC  est requise</div>
+                  </div></div>
+                  <div class="form-group col-lg-4">
+                    <label for="referencefacture">Réf Fact Fourn<span class="champs-obligatoire">*</span></label>
+                    <input  [ngClass]="{ 'is-invalid': ft.referencefacture.errors && ft.referencefacture.touched }" type="text" formControlName="referencefacture" name="referencefacture" class="form-control"
+                      placeholder="Réf Fact Fourn*" value=""
+                     />
+                     <div *ngIf="ft.referencefacture.errors && ft.referencefacture.touched" class="invalid-feedback">
+                      <div *ngIf="ft.referencefacture.errors.required">Réf Fact Fourn requise</div> 
+                    </div>
+                  </div>
+               
+                  <div class="form-group col-lg-4">
+                    <label for="note">Devise</label>
+                    <mat-form-field class="top-100" >
+                        <mat-select formControlName="devise">
+                          <mat-option disabled value="">Devise</mat-option>
+                          <ng-container>
+                        
+                          <mat-option  *ngFor="let devis of devies" [value]="devis.devise">{{devis.pays}}</mat-option>
+                        </ng-container>
+                        </mat-select>
+                      </mat-form-field>
+                  </div>
+               
+              
+                  <div class="form-group col-lg-4">
+                    <label for="mtdevise">Mt en devisee<span class="champs-obligatoire">*</span></label>
+                    <input type="number" [ngClass]="{ 'is-invalid': ft.mtdevise.errors && ft.mtdevise.touched }" min="1" step="0.01"  formControlName="mtdevise" name="mtdevise" class="form-control"
+                      placeholder="Mt en devise*" value=""
+                      />
+                     <div *ngIf="ft.mtdevise.errors && ft.mtdevise.touched" class="invalid-feedback">
+                      <div *ngIf="ft.mtdevise.errors.required">Matricule fiscale est requise</div> 
+                    
+                  </div> </div>
+                  <div class="form-group col-lg-4">
+                    <label for="tconversion">taux de conversion<span class="champs-obligatoire">*</span></label>
+                    <input type="number" [ngClass]="{ 'is-invalid': ft.tconversion.errors && ft.tconversion.touched }" min="1" step="0.01" formControlName="tconversion"
+                      name="tconversion" class="form-control" placeholder="cours de conversion*" value="" (change)="calculemontant()"
+                   />
+                    <div *ngIf="ft.tconversion.errors && ft.tconversion.touched" class="invalid-feedback">
+                      <div *ngIf="ft.tconversion.errors.required">taux de conversion est requis</div> 
+                                       </div>
+                  </div>
+                  <div class="form-group col-lg-4">
+                    <label for="mtdinar">Mt en dinars<span class="champs-obligatoire">*</span></label>
+                    <input type="number" disabled  [ngClass]="{ 'is-invalid': ft.mtdinar.errors && ft.mtdinar.touched }" formControlName="mtdinar" name="mtdinar" class="form-control"
+                      placeholder="Mt en dinars*" value=""
+                     />
+                    <div *ngIf="ft.mtdinar.errors && ft.mtdinar.touched" class="invalid-feedback">
+                      <div *ngIf="ft.mtdinar.errors.required">montant en dinars</div> 
+                  </div>
+                  </div>
+                </div>
+            </div>
+                  <hr class="my-4" />
+              <div class="pl-lg-4">
+              <div class="row">
+               
+               
+                  <div class="form-group col-lg-4">
+                    <label for="Rdeclation">Réf déclaration douane<span class="champs-obligatoire">*</span></label>
+                    <input type="text" [ngClass]="{ 'is-invalid': ft.Rdeclation.errors && ft.Rdeclation.touched }" formControlName="Rdeclation" name="Rdeclation" class="form-control"
+                      placeholder="Réf déclaration douaner*" value="" />
+                     <div *ngIf="ft.Rdeclation.errors && ft.Rdeclation.touched" class="invalid-feedback">
+                      <div *ngIf="ft.Rdeclation.errors.required">L'Réf déclaration douane est requis</div>
+                      
+                    </div>                 
+                  </div>
+                
+              
+                  <div class="form-group col-lg-4">
+                    <label for="droitD">droit de douane<span class="champs-obligatoire">*</span></label>
+                    <input  [ngClass]="{ 'is-invalid': ft.droitD.errors && ft.droitD.touched }" type="text" formControlName="droitD" name="droitD" class="form-control"
+                      placeholder="droit de douane*" value=""
+                      />
+                    <div *ngIf="ft.droitD.errors && ft.droitD.touched" class="invalid-feedback">
+                      <div *ngIf="ft.droitD.errors.required">droit de douane est requise</div> 
+                  </div>
+                  </div>
+                  <div class="form-group col-lg-4">
+                    <label for="tva">tva<span class="champs-obligatoire">*</span></label>
+                    <input [ngClass]="{ 'is-invalid': ft.tva.errors && ft.tva.touched }" type="number" onkeypress="return event.charCode >= 48" min="1" formControlName="tva"
+                      name="tva" class="form-control" placeholder="tva*" value=""
+                   />
+                     <div *ngIf="ft.tva.errors && ft.tva.touched" class="invalid-feedback">
+                      <div *ngIf="ft.tva.errors.required">tva est requis</div>
+                    </div>
+                  </div>
+                    <div class="form-group col-lg-4">
+                        <label for="avanceis">Avance/IS<span class="champs-obligatoire">*</span></label>
+                        <input [ngClass]="{ 'is-invalid': ft.avanceis.errors && ft.avanceis.touched }" type="number" onkeypress="return event.charCode >= 48" min="1" formControlName="avanceis"
+                          name="avanceis" class="form-control" placeholder="Avance/IS*" value=""
+                       />
+                       <div *ngIf="ft.avanceis.errors && ft.avanceis.touched" class="invalid-feedback">
+                        <div *ngIf="ft.avanceis.errors.required">tva est requis</div>
+                      </div>
+                  </div>
+                  <div class="form-group col-lg-4">
+                    <label for="refQ">Réf quittance<span class="champs-obligatoire">*</span></label>
+                    <input [ngClass]="{ 'is-invalid': ft.refQ.errors && ft.refQ.touched }" type="number" onkeypress="return event.charCode >= 48" min="1" formControlName="refQ"
+                      name="refQ" class="form-control" placeholder="ref quittance*" value=""
+                   />
+                   <div *ngIf="ft.refQ.errors && ft.refQ.touched" class="invalid-feedback">
+                    <div *ngIf="ft.refQ.errors.required">Réf quittance</div>
+                  </div>
+              </div>
+              <div class="form-group col-lg-4">
+                <label for="assurence">assurance<span class="champs-obligatoire">*</span></label>
+                <input type="text"  formControlName="assurence"
+                  name="assurence" class="form-control" placeholder="assurance*" value=""
+               />
+          </div>
+          <div class="form-group col-lg-3">
+            <label for="Magasinage">Magasinage<span class="champs-obligatoire">*</span></label>
+            <input type="text"  formControlName="Magasinage"
+              name="Magasinage" class="form-control" placeholder="Magasinage*" value=""
+           />
+      </div>
+      <div class="form-group col-lg-3">
+        <label for="Fret">Fret<span class="champs-obligatoire">*</span></label>
+        <input type="text"  formControlName="Fret"
+          name="Fret" class="form-control" placeholder="Fret*" value=""
+       />
+  </div>
+  <div class="form-group col-lg-3">
+    <label for="Transit">Transit<span class="champs-obligatoire">*</span></label>
+    <input type="text"  formControlName="Transit"
+      name="Transit" class="form-control" placeholder="Transit*" value=""
+   />
+</div>
+<div class="form-group col-lg-3">
+    <label for="Transport">Transport<span class="champs-obligatoire">*</span></label>
+    <input type="number"  formControlName="Transport" min="0" step="0.01"
+      name="Transport" class="form-control" placeholder="Transport*" value=""
+   />
+</div>
+</div>
+              </div>
+            <div class="text-center">
+            <button 
+              type="submit" 
+              (click)="AddossierSubmit()"
+              [ngClass]="{ 'btn-danger': formFournisseur.invalid , 'btn-success': !formFournisseur.invalid}">Ajouter
+              fournisseur</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

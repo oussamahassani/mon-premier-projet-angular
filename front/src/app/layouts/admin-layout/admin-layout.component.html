@@ -1,0 +1,38 @@
+<!-- Sidenav -->
+<app-sidebar></app-sidebar>
+<button id="navToggle" (click)="collapseSide()" class="btn btn-round btn-primary navToggle">
+  <div class="arrow">
+    <span class="innerArrow"><i id="arrowIcon" class="fas fa-chevron-left"></i></span>
+  </div>
+</button>
+<div id="main-content" class="main-content">
+  <!-- Top navbar -->
+  <app-navbar></app-navbar>
+  <!-- Pages -->
+  <router-outlet>
+
+
+    
+  <!--MODAL DELETE-->
+  <ng-template #alertModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Attention!</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Stock de matières premiére est faible! </strong></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button type="button" class="btn btn-success" (click)="grouperDemande()">Crée une demande</button>
+          </div>
+    </div>
+  </ng-template>
+  </router-outlet>
+  <div class="container-fluid">
+    <app-footer></app-footer>
+  </div>
+</div>

@@ -1,0 +1,87 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+  <div class="container-fluid">
+    <div class="header-body">
+
+    </div>
+  </div>
+</div>
+<div class="container-fluid mt--7">
+  <div class="row">
+
+    <div class="col">
+      <div class="card shadow">
+        <div class="card-header card-header-danger">
+          <h4 class="card-title">Ajouter Produit</h4>
+          <p class="card-category">Nouveau</p>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group form-input-file">
+                <input #imageInput placeholder="Product Image" (change)="addImage(imageInput)" name="couv" type="file"
+                  accept="image/*" class="inputfile">
+                <label for="couv">Image*</label>
+              </div>
+            </div>
+            <div class="col-6 text-center" *ngIf="previewURL">
+               <img src="{{previewURL}}" height="80px"/>
+            </div>
+          </div>
+          <form class="row" [formGroup]="formProduct" style="justify-content: center;">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="code">UGS</label>
+                <input type="text" formControlName="code" name="code" class="form-control" placeholder="Entrer le UGS*" value=""
+                  [ngClass]="{ 'is-invalid': submitProduct && ft.code.errors }" />
+                <div *ngIf="submitProduct && ft.code.errors" class="invalid-feedback">
+                  <div *ngIf="ft.code.errors.required">Product UGS is required</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="name">Product Name</label>
+                <input type="text" formControlName="name" name="name" class="form-control" placeholder="Saisir le nom du produit*"
+                  value="" [ngClass]="{ 'is-invalid': submitProduct && ft.name.errors }" />
+                <div *ngIf="submitProduct && ft.name.errors" class="invalid-feedback">
+                  <div *ngIf="ft.name.errors.required">Product name is required</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="prix">Prix hors taxe</label>
+                <input type="text" formControlName="prix" name="prix" class="form-control" placeholder="Prix hors taxe*" value=""
+                  [ngClass]="{ 'is-invalid': submitProduct && ft.prix.errors }" />
+                <div *ngIf="submitProduct && ft.prix.errors" class="invalid-feedback">
+                  <div *ngIf="ft.prix.errors.required">Price is required</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="tva">TVA %</label>
+                <input type="text" formControlName="tva" name="tva" class="form-control" placeholder="Saisir la TVA*" value=""
+                  [ngClass]="{ 'is-invalid': submitProduct && ft.tva.errors }" />
+                <div *ngIf="submitProduct && ft.tva.errors" class="invalid-feedback">
+                  <div *ngIf="ft.tva.errors.required">TVA is required</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="promo">Promo</label>
+                <input type="text" formControlName="promo" name="promo" class="form-control" placeholder="Saisir la Promo*" value=""
+                  [ngClass]="{ 'is-invalid': submitProduct && ft.promo.errors }" />
+              </div>
+              <div class="form-group">
+                <label for="remise">Remise %</label>
+                <input type="text" formControlName="remise" name="remise" class="form-control" placeholder="Saisir la Remise*"
+                  value="" [ngClass]="{ 'is-invalid': submitProduct && ft.remise.errors }" />
+              </div>
+            </div>
+
+            <button (click)="onAddProductSubmit()" type="submit" class="btn btn-danger pull-right"
+              [disabled]="formProduct.invalid">Add Product</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

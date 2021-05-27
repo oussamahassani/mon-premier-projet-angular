@@ -1,0 +1,121 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+<div class="receipt-content" style="background: transparent;margin-top: -200px;">
+	<div class="snippet">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="invoice-wrapper">
+					<div class="payment-info">
+						<div class="row">
+							<div class="col-sm-6">
+								<span>Bon de prélèvement</span>
+								<strong *ngIf="lastName && lastName.length>0">N° {{lastName}}</strong>
+								
+							</div>
+							<div class="col-sm-6 text-right">
+								<span>Date commande</span>
+								<strong >{{now | date:'medium'}}</strong>
+							</div>
+						</div>
+					</div>
+
+					<div class="payment-details">
+						<div class="row">
+							<div class="col-sm-6" *ngIf="user">
+								<p class="client-info">
+									<span class="info-label">Nom & prenom : </span>
+									<span class="info-text">{{user.fname}} {{user.lname}}</span>
+								</p>
+								<p class="client-info">
+									<span class="info-label">Telephone : </span>
+									<span class="info-text">{{user.tel}}</span>
+								</p>
+							</div>
+							<div class="col-sm-6" *ngIf="demand">
+								<div class="float-right">
+									<p class="client-info">
+										<span class="info-label">Date demande : </span>
+										<span class="info-text">{{demand.createdAt | date}}</span>
+									</p>
+									
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="line-items">
+						<div class="headers clearfix">
+							<div class="row">
+								<div class="table-responsive">
+									<table class="table align-items-center table-flush">
+										<thead class="thead-light">
+											<tr>
+												<th scope="col">Reference</th>
+												<th scope="col">Nom</th>
+												<th scope="col">Quantité Demandée</th>
+                                                
+                                                
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let matiere of matieres;let i=index;">
+												<td class="mb-0 text-sm"> {{matiere.reference}}</td>
+												<td>{{matiere.designation}}</td>
+												<td>
+														<input matInput type="number" [(ngModel)]="matiere.asked_quantite" onkeypress="return event.charCode >= 48" min="1" name="qtedemande{{i}}" class="form-control"
+														  placeholder="Quantité Demandée*" [value]="matiere.asked_quantite" (change)="qteChanged($event)"
+														  />
+												</td>  
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+                        <div class="row total">
+							<div class="col-sm-6">
+								<p class="extra-notes">
+                                    <strong>Notes extra</strong>
+									<textarea rows="4" [(ngModel)]="note"
+										cols="50"></textarea>
+
+
+                                </p>
+							</div>
+							<div class="col-sm-6">
+								
+							</div>
+						</div>
+
+						<div class="total text-right">
+
+							<div>
+
+							</div>
+						</div>
+
+						
+
+						<div class="print">
+							<span *ngIf="isStockInsuffisant" class="btn btn-danger">Stock insuffisant</span>
+							<button mat-raised-button class="btn btn-success" *ngIf="!isStockInsuffisant"  type="submit"
+                        (click)="submitCommand()">Confirmer bon de prélèvement</button>
+						</div>
+					</div>
+				</div>
+
+				
+			</div>
+		</div>
+	</div>
+	</div>
+</div>

@@ -1,0 +1,154 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+  <div class="container-fluid">
+      <div class="header-body">
+
+      </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--7">
+  <!-- Table -->
+  <div class="row">
+      <div class="col">
+          <div class="card shadow">
+              <div class="card-header border-0 disp-flex">
+                  <div class="mb-0">
+                      <h3>Client Management</h3>
+                      <p>{{clientsLength}} Client</p>
+                  </div>
+                  <div class="mb-0" style="display:grid">
+                      <a routerLink="/clients/ajouter-client" class="btn btn-sm btn-primary">Ajouter Client</a>
+                      <form
+                          class="navbar-search navbar-search-light form-inline mr-3 d-none d-md-flex ml-lg-auto mt-3">
+                          <div class="form-group mb-0" [ngClass]="{ 'focused': focus === true }">
+                              <div class="input-group input-group-alternative">
+                                  <div class="input-group-prepend">
+                                      <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                  </div>
+                                  <!--(keyup)="doFilter($event.target.value)" (blur)="focus = false" (focus)="focus = true"-->
+                                 <input class="form-control" placeholder="Search" type="text" 
+                                        #input>
+                              </div>
+                          </div>
+                      </form>
+
+                  </div>
+
+              </div>
+              <div class="product">
+                <mat-card *ngIf="dataSource.loading$ | async" style="display: flex; justify-content: center; align-items: center;">
+                    <mat-progress-spinner diameter="40" 
+                      mode="indeterminate">
+                    </mat-progress-spinner>
+                  </mat-card>
+                  <table mat-table [dataSource]="dataSource" matSort class="table  mat-elevation-z8 align-items-center table-flush">
+                      <!-- Name Column -->
+                      <ng-container matColumnDef="name">
+                          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+                          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                      </ng-container>
+                      <!-- Phone Column -->
+                      <ng-container matColumnDef="tel">
+                          <th mat-header-cell *matHeaderCellDef mat-sort-header> Telephone </th>
+                          <td mat-cell *matCellDef="let element"> {{element.tel}} </td>
+                      </ng-container>
+                      <!-- Email Column -->
+                      <ng-container matColumnDef="email">
+                          <th mat-header-cell *matHeaderCellDef mat-sort-header> Email</th>
+                          <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+                      </ng-container>
+                      <!--'name','tel','email','adresse','zone','commands_no','createdAt', 'action'-->
+                     
+                      <!-- Zone Column -->
+                      <ng-container matColumnDef="zone">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Zone </th>
+                        <td mat-cell *matCellDef="let element">{{element.zone}} </td>
+                    </ng-container>
+                    <!-- Commands number Column -->
+                    <ng-container matColumnDef="commands_no">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> Commands Number </th>
+                      <td mat-cell *matCellDef="let element">{{element.commands_no}} </td>
+                  </ng-container>
+                      <!-- Date Column -->
+                      <ng-container matColumnDef="createdAt">
+                          <th mat-header-cell *matHeaderCellDef mat-sort-header> Created At </th>
+                          <td mat-cell *matCellDef="let element">{{element.createdAt | date}}</td>
+                      </ng-container>
+                      <!-- Action Column -->
+                      <ng-container matColumnDef="action">
+                          <th mat-header-cell *matHeaderCellDef> Action </th>
+                          <td mat-cell *matCellDef="let element">
+                              <div ngbDropdown placement="bottom-right">
+                                  <button class="btn btn-sm btn-icon-only text-light" ngbDropdownToggle>
+                                      <i class="ni ni-active-40 text-blue font-icon"></i>
+                                  </button>
+                                  <div ngbDropdownMenu class="dropdown-menu-right dropdown-menu-arrow">
+                                      <button class="dropdown-item" (click)="client=element;open(qteModal)">Commander</button>
+                                      <a class="dropdown-item" routerLink="/clients/update-client"
+                                          [queryParams]="{id: element._id}">Update Client</a>
+                                      <button class="dropdown-item" (click)="deleteClient=element;open(deleteModal)">Delete Client</button>
+                                  </div>
+                              </div>
+                          </td>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index;"></tr>
+                  </table>
+                  
+                  
+              </div>
+              <div class="card-footer py-4">
+                  <mat-paginator [length]="clientsLength" [pageSize]="5"
+                  [pageSizeOptions]="[5,10]"></mat-paginator>
+                 <!-- <mat-paginator (page)="pageChangeEvent($event)" [pageSizeOptions]="[3]" showFirstLastButtons></mat-paginator>-->
+              </div>
+          </div>
+          
+      </div>
+  </div>
+
+</div>
+
+<!--MODAL DELETE-->
+<ng-template #deleteModal let-modal>
+  <div class="modal-content">
+      <div class="modal-header">
+          <h4 class="modal-title" id="modal-title">Client deletion</h4>
+          <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" *ngIf="deleteClient">
+          <p><strong>Are you sure you want to delete <span class="text-primary">"{{deleteClient.name}}"</span> ?</strong></p>
+          <p>This client will no longer be displayed.
+          <span class="text-danger">This operation can not be undone.</span>
+          </p>
+        </div>
+        <div class="modal-footer">
+            <!--modal.close('Ok click')-->
+          <button type="button" mat-raised-button class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Annuler</button>
+          <button type="button" class="btn btn-danger" (click)="deleteClients()">Delete</button>
+        </div>
+  </div>
+</ng-template>
+<!--MODAL QTE-->
+<ng-template #qteModal let-modal>
+  <div class="modal-content">
+      <div class="modal-header">
+          <h4 class="modal-title" id="modal-title">Client {{client.name}}</h4>
+          <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+         
+        </div>
+        <div class="modal-footer">
+            <!--modal.close('Ok click')-->
+          <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+          <button type="button" class="btn btn-danger">Commander</button>
+        </div>
+  </div>
+</ng-template>
+
+

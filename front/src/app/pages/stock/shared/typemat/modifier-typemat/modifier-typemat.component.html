@@ -1,0 +1,59 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+  
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid mt--7">
+    <div class="row">
+  
+      <div class="col">
+        <div class="card shadow">
+          <form [formGroup]="formTypemat" (ngSubmit)="onSubmit()">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title">Modifier une famille de produit </h4>
+          </div>
+          <div class="card-body row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="name">Nom de la famille<span style="color: red;">*</span></label>
+                  <input type="text" formControlName="name" name="name" class="form-control"
+                    placeholder="Nom du type*"
+                    [ngClass]="{ 'is-invalid':formTypemat.controls.name.errors && formTypemat.controls.name.touched }" />
+                    <mat-error *ngIf="!formTypemat.controls.name.valid && formTypemat.controls.name.touched">Le nom est requis</mat-error>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <button [disabled]="submitTypemat" type="button" (click)="open(modifierModal)" class="btn btn-primary pull-right ml-10"
+              [disabled]="formTypemat.invalid"><i *ngIf="submitTypemat" class="fa fa-spinner fa-spin mr-2"></i>Confirmer</button>
+              </div>
+  
+          </div>
+        </form>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+
+
+   <!--MODAL Modifier-->
+  <ng-template #modifierModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title-test">Modifier une famille de produit</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Est vous sur de mettre à jour la famille du produit ?</strong></p>
+          </div>
+          <div class="modal-footer">
+              <!--modal.close('Ok click')-->
+            <button type="button" mat-raised-button  class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Annuler</button>
+            <button type="submit" (click)="onSubmit()" class="btn btn-success" >Confirmer</button>
+          </div>
+    </div>
+  </ng-template>

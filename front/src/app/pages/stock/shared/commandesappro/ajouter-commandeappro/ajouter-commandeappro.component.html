@@ -1,0 +1,264 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+        <div class="header-body">
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt--7">
+<div class="receipt-content" style="background: transparent;margin-top: -200px;">
+	<div class="snippet">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="invoice-wrapper">
+					<div class="payment-info">
+						<div class="row">
+							<div class="col-sm-6">
+								<span>Bon de commande</span>
+								<strong *ngIf="lastName && lastName.length>0">N° Commande: {{lastName}}</strong>
+							</div>
+							<div class="col-sm-6 text-right">
+								<span>Date commande</span>
+								<strong >{{now | date:'medium'}}</strong>
+							</div>
+						</div>
+					</div>
+
+					<div class="payment-details">
+						<div class="row">
+							<div class="col-sm-6" *ngIf="user">
+								<p class="client-info">
+									<span class="info-label">Nom & prenom : </span>
+									<span class="info-text">{{user.fname}} {{user.lname}}</span>
+								</p>
+								<p class="client-info">
+									<span class="info-label">Telephone : </span>
+									<span class="info-text">{{user.tel}}</span>
+								</p>
+							</div>
+							<div class="col-sm-6" *ngIf="demand">
+								<div class="float-right">
+									<p class="client-info">
+										<span class="info-label">Date demande : </span>
+										<span class="info-text">{{demand.createdAt | date}}</span>
+									</p>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="line-items">
+						<div class="headers clearfix">
+							<div class="row">
+								<div class="table-responsive">
+									<table *ngIf="typedemande=='stock'" class="table align-items-center table-flush">
+										<thead class="thead-light">
+											<tr>
+												<th scope="col">Reference</th>
+												<th scope="col">Nom</th>
+												<th scope="col">Quantité Demandée</th>
+                                                <th scope="col">Fournisseur</th>
+                                                <th scope="col">Prix HT (Mis a jour)</th>
+												<th scope="col">TVA</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let matiere of matieres;let i=index">
+												<td class="mb-0 text-sm"> {{matiere.reference}}</td>
+
+												<td>
+													{{matiere.designation}}
+												</td>
+												<td>
+													{{matiere.asked_quantite}}
+												</td>
+												<td>
+													<button    mat-raised-button class="btn btn-success" (click)="open(fournissuerModal) ; selectmat(i)" >choix</button>
+													<!-- <div class="form-group">
+                                                        <select class="form-control" [(ngModel)]="matiere.chosenFournisseur" (change)="notifyChange(matiere,$event)">
+                                                            <option *ngFor="let fournisseur of matiere.fournisseurs; let i=index" [value]="fournisseur.fournisseur._id">{{fournisseur.fournisseur.name}}, Prix: {{fournisseur.prix_ht}}</option>
+                                                          </select>
+                                                    </div> -->
+                                                </td>
+                                                <td>
+                                                    {{matiere.prix_achat | number:'0.3-3'}} / {{matiere.nature_stock}}
+                                                </td>
+												<td>
+													{{matiere.tva}}%
+                                                </td>
+                                                
+											</tr>
+
+										</tbody>
+									</table>
+
+									<table *ngIf="typedemande=='services'" class="table align-items-center table-flush">
+										<thead class="thead-light">
+											<tr>
+												<th scope="col">Reference</th>
+												<th scope="col">Nom</th>
+                                                <th scope="col">Fournisseur</th>
+                                                <th scope="col">Prix HT (Mis a jour)</th>
+												<th scope="col">TVA</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let service of services;let i=index">
+												<td class="mb-0 text-sm"> {{service.num}}</td>
+
+												<td>
+													{{service.name}}
+												</td>
+												
+												<td>
+													<button    mat-raised-button class="btn btn-success" (click)="open(fournissuerModal) ; selectmat(i)" >choix</button>
+												
+                                                </td>
+                                                <td>
+                                                    {{service.total | number:'0.3-3'}}
+                                                </td>
+												<td>
+													{{service.tva}}%
+                                                </td>
+                                                
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="row total">
+							<div class="col-sm-8">
+                                   
+							</div>
+							<div class="col-sm-4 text-right">
+								<div class="float-right">
+									<div class="field">
+										<span class="field-label">Montant hors taxe</span>
+										<span class="field-value">
+											<div class="form-group">
+											
+													<span  class="form-control span-input" >{{total_ht | number:'0.3-3'}}</span>	
+											</div>
+										</span>
+									</div>
+									<div class="field">
+										<span class="field-label">Montant TVA</span>
+										<span class="field-value">
+											<div class="form-group">
+												
+													<span  class="form-control span-input" >{{total_tva | number:'0.3-3'}}</span>			
+											</div>
+										</span>
+									</div>
+								
+									<div class="field grand-total">
+										<span class="field-label">Montant TTC</span>
+										<span class="field-value">
+											<div class="form-group">
+												
+													<span  class="form-control span-input" >{{total_ht+total_tva | number:'0.3-3'}}</span>	
+											</div>
+										</span>
+									</div><br/>
+									
+								</div>
+							</div>
+						</div>
+
+						<div  *ngIf="typedemande=='stock'" class="print">
+							<button mat-raised-button class="btn btn-success"  type="submit"
+                        (click)="submitCommand()">Ajouter bon de commande</button>
+						</div>
+						<div *ngIf="typedemande=='services'" class="print">
+							<button mat-raised-button class="btn btn-success"  type="submit"
+                        (click)="submitCommandservice()">Ajouter bon de commande</button>
+						</div>
+					</div>
+				</div>
+
+				
+			</div>
+		</div>
+	</div>
+	</div>
+</div>
+<ng-template #fournissuerModal let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-title">Choisire   Fournissuer</h4>
+            <button type="button" class="close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+		 <div>
+			<div class="row"  *ngIf="typedemande=='stock' && matieres[mat].fournisseurs.length>1">
+				<h3 class="col-md-4 ml-2">trier avec</h3>
+			<select class="form-control col-md-4"  (change)="sortfornissuer($event)">
+				<option  value="prix">prix</option>
+				<option  value="modaliter">modaliter de payement</option>
+				<option  value="livraison">delais de livraison</option>
+			  </select>
+			</div>
+			<div class="row"  *ngIf="typedemande=='services' && services[mat].fournisseurs.length>1">
+				<h3 class="col-md-4 ml-2">trier avec</h3>
+			<select class="form-control col-md-4"  (change)="sortfornissuerservices($event)">
+				<option  value="prix">prix</option>
+				<option  value="modaliter">modaliter de payement</option>
+				<option  value="livraison">delais de livraison</option>
+			  </select>
+			</div>
+		</div> 
+	    <div *ngIf="typedemande=='stock'" class="form-group m-5 p-5">
+		   <table  class="table align-items-center table-flush"><thead class="thead-light"><th scope="col">Nom Fournisseur</th> <th scope="col">Prix</th>
+			 <th scope="col">Delais de livraison </th> <th scope="col">Modaliter de payement </th>  <th scope="col">Select </th></thead>
+		<ng-container *ngFor="let fournisseur of matieres[mat].fournisseurs; let i=index">
+	
+	   <tr>
+		   <td> {{fournisseur.fournisseur.name}}</td>
+		   <td> {{fournisseur.prix_ht}}</td>
+		   <td > <span *ngIf="fournisseur.delais_de_livraison">{{fournisseur.delais_de_livraison}}</span>
+			<span *ngIf="!fournisseur.delais_de_livraison">demande prix  non  complete</span>
+		</td>
+		   <td>
+			   <span *ngIf="fournisseur.modaliter_de_payement">{{fournisseur.modaliter_de_payement}}</span>
+			   <span *ngIf="!fournisseur.modaliter_de_payement">demande prix  non  complete</span>
+			</td>
+		   <td><input type="radio" [(ngModel)]="matieres[mat].chosenFournisseur" (change)="notifyChange(matieres[mat],$event)" value={{fournisseur.fournisseur._id}}></td>
+		</tr>
+		</ng-container>
+	</table>
+	<div class="print">
+		<button mat-raised-button class="btn btn-success"  type="submit"
+	(click)="confirmechoix() ; modal.dismiss('Cross click')">confirmer le choix</button>
+	</div>
+
+	</div>
+	<div *ngIf="typedemande=='services'" class="form-group m-5 p-5">
+		<table  class="table align-items-center table-flush"><thead class="thead-light"><th scope="col">Nom Fournisseur</th> <th scope="col">Prix</th>
+		  <th scope="col">Delais de livraison </th> <th scope="col">Modaliter de payement </th>  <th scope="col">Select </th></thead>
+	 <ng-container *ngFor="let fournisseur of services[mat].fournisseurs; let i=index">
+ 
+	<tr>
+		<td> {{fournisseur.fournisseur.name}}</td>
+		<td> {{fournisseur.prix_ht}}</td>
+		<td > <span *ngIf="fournisseur.delais_de_livraison">{{fournisseur.delais_de_livraison}}</span>
+		 <span *ngIf="!fournisseur.delais_de_livraison">demande prix  non  complete</span>
+	 </td>
+		<td>
+			<span *ngIf="fournisseur.modaliter_de_payement">{{fournisseur.modaliter_de_payement}}</span>
+			<span *ngIf="!fournisseur.modaliter_de_payement">demande prix  non  complete</span>
+		 </td>
+		<td><input type="radio" [(ngModel)]="services[mat].chosenFournisseur" (change)="notifyChangeservices(services[mat],$event)" value={{fournisseur.fournisseur._id}}></td>
+	 </tr>
+	 </ng-container>
+ </table>
+ <div class="print">
+	 <button mat-raised-button class="btn btn-success"  type="submit"
+ (click)="confirmechoix() ; modal.dismiss('Cross click')">confirmer le choix</button>
+ </div>
+
+ </div>
+    </div>
+</ng-template>
