@@ -38,7 +38,7 @@
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.15",
     "moment": "^2.26.0",
-    "moment-timezone": "^0.5.31",
+    "moment-timezone": "^0.5.35",
     "mongo-date-query": "^1.2.2",
     "mongodb": "^3.5.8",
     "mongoose": "^5.9.16",
